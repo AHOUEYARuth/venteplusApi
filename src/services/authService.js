@@ -1,6 +1,7 @@
 import prisma from '../prismaClient.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { SellersModel } from '../models/sellers.model.js';
 
 
 const SALT_ROUNDS = 10;
@@ -24,25 +25,19 @@ export async function register({
         status: 400
     });
 
-    const existing = await prisma.sellers.findUnique({
-        where: {
-            phoneNumber
-        }
-    });
+    const existing = await SellersModel.findByPhoneNumber(phoneNumber);
     if (existing) throw Object.assign(new Error('Phone number already in use'), {
         status: 409
     });
 
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
-    const seller = await prisma.sellers.create({
-        data: {
+    const seller = await SellersModel.create({
             email,
             password: hash,
             phoneNumber,
             name,
             avatarUrl: avatarPath
-        },
-    });
+        });
 
     return {
         id: seller.id,
@@ -63,11 +58,7 @@ export async function login({
         status: 400
     });
 
-    const seller = await prisma.sellers.findUnique({
-        where: {
-            phoneNumber
-        }
-    });
+    const seller = await SellersModel.findByPhoneNumber(phoneNumber);
     if (!seller) throw Object.assign(new Error('Invalid credentials'), {
         status: 401
     });
