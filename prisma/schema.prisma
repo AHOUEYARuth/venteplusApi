@@ -8,13 +8,252 @@ datasource db {
     url = env("DATABASE_URL")
 }
 
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  firstName    String
+  email        String   @unique
+  phoneNumber  String
+  password     String
+  avatarUrl String? 
+  dateCreator  DateTime @default(now())
+  role         UserRole
+  
+  // Relations
+  admin        Admin?
+  trader       Trader?
+   
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-model Sellers {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-    phoneNumber String @unique
-    email String?
-    password String
-    name String?
-    avatarUrl String? 
-    createdAt DateTime @default(now())
+  @@map("users")
+}
+
+model Admin {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
+
+
+model Trader {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  identityCard String
+  userId       String @unique @db.ObjectId
+  role         String @default("TRADER")
+  
+  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shop   Shop? @relation(name: "ShopToTrader")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("traders")
+}
+
+ 
+model Customers {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  firstName    String
+  email        String?
+  phoneNumber  String?
+  shopId       String   @db.ObjectId 
+
+  shop            Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customerCredits CustomerCredits[]
+  orders          Order[]
+
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("customers")
+}
+
+model CustomerCredits {
+  id               String  @id @default(auto()) @map("_id") @db.ObjectId
+  totalAmountToPay Float
+  isPaid           Boolean @default(false)
+  amountPaid        Float   @default(0)
+  customerId       String  @db.ObjectId
+  
+  
+  customer Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  recoveries Recovery[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("customer_credits")
+}
+
+model Recovery {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  amountPaid        Float
+  customerCreditId String @db.ObjectId
+  
+  customerCredit CustomerCredits @relation(fields: [customerCreditId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("recoveries")
+}
+
+
+
+
+model Shop {
+  id                 String @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  description        String
+  logo               String?
+  address            String
+  image              String
+  interpretationArea String
+  traderId           String @unique @db.ObjectId
+  
+  trader      Trader  @relation(name: "ShopToTrader", fields: [traderId], references: [id], onDelete: Cascade)
+  order        Order[]
+  expenses Expenses[]
+  products Product[]
+  customers Customers[]
+  productCategories ProductCategory[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("shops")
+}
+
+ 
+
+model Expenses {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  label       String
+  description String
+  spendAmount Float
+  date        DateTime @default(now())
+  shopId      String   @db.ObjectId
+  
+  shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("expenses")
+}
+
+model ActivityHistoric {
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  action String
+  place  String
+  date   DateTime @default(now())
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("activity_historics")
+}
+
+
+
+
+//============================== Order and Product Models =============================//
+model Order {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  totalAmount     Float
+  totalInputIndex String
+  deliveryAddress String
+  status          OrderStatus
+  orderDate       DateTime @default(now())
+  customerId      String   @db.ObjectId
+  shopId          String   @db.ObjectId
+  isSale         Boolean  @default(false)
+  
+  customer    Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  shop        Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  toOrders    ToOrder[]
+   
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("orders")
+}
+
+model ToOrder {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  quantity  Int
+  orderId   String @db.ObjectId
+  productId String @db.ObjectId
+  
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("to_orders")
+}
+
+model Product {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  description       String
+  image             String
+  availableQuantity Int
+  minimumQuantity   Int
+  purchasePrice     Float
+  salePrice         Float
+  unitMeasurement   String?
+  categoryId        String   @db.ObjectId
+  shopId            String   @db.ObjectId
+  
+  category ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  shop     Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  toOrders ToOrder[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("products")
+}
+
+model ProductCategory {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  shopId String @db.ObjectId
+
+  shop   Shop    @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  products Product[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("product_categories")
+}
+//============================== Order and Product Models =============================//
+
+
+enum UserRole {
+  ADMIN
+  TRADER
+  CUSTOMER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  DELIVERED
+  CANCELLED
 }

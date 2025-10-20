@@ -1,0 +1,15 @@
+import express from "express";
+import { TraderController } from "../controllers/traderController.js";
+import validateRequest from "../middlewares/validateRequests.js";
+import { registerValidation } from "../validators/authValidator.js";
+import upload from "../middlewares/upload.js";
+
+const router = express.Router();
+
+router.post('/register',   upload.fields([
+    { name: 'avatar', maxCount: 1 },
+    { name: 'logo', maxCount: 1 },
+    { name: 'identityCard', maxCount: 1 },
+    { name: 'imageShop', maxCount: 1 },
+  ]), registerValidation, validateRequest, TraderController.register);
+export default router;

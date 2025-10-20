@@ -1,7 +1,7 @@
 import prisma from '../prismaClient.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { SellersModel } from '../models/sellers.model.js';
+import { TraderModel } from '../models/trader.model.js';
 
 
 const SALT_ROUNDS = 10;
@@ -14,40 +14,6 @@ function signToken(payload) {
 }
 
 
-export async function register({
-    email,
-    phoneNumber,
-    password,
-    name,
-    avatarPath
-}){
-    if (!password || !phoneNumber) throw Object.assign(new Error('Email, phone number, and password required'), {
-        status: 400
-    });
-
-    const existing = await SellersModel.findByPhoneNumber(phoneNumber);
-    if (existing) throw Object.assign(new Error('Phone number already in use'), {
-        status: 409
-    });
-
-    const hash = await bcrypt.hash(password, SALT_ROUNDS);
-    const seller = await SellersModel.create({
-            email,
-            password: hash,
-            phoneNumber,
-            name,
-            avatarUrl: avatarPath
-        });
-
-    return {
-        id: seller.id,
-        email: seller.email,
-        name: seller.name,
-        avatarUrl: seller.avatarUrl,
-        phoneNumber: seller.phoneNumber
-    };
-};
-
 
 export async function login({
     phoneNumber,
@@ -58,28 +24,28 @@ export async function login({
         status: 400
     });
 
-    const seller = await SellersModel.findByPhoneNumber(phoneNumber);
-    if (!seller) throw Object.assign(new Error('Invalid credentials'), {
+    const trader = await TraderModel.findByPhoneNumber(phoneNumber);
+    if (!trader) throw Object.assign(new Error('Invalid credentials'), {
         status: 401
     });
 
-    const valid = await bcrypt.compare(password, seller.password);
+    const valid = await bcrypt.compare(password, trader.password);
     if (!valid) throw Object.assign(new Error('Invalid credentials'), {
         status: 401
     });
 
     const token = signToken({
-        sub: seller.id,
-        phoneNumber: seller.phoneNumber
+        sub: trader.id,
+        phoneNumber: trader.phoneNumber
     });
     return {
         token,
-        seller: {
-            id: seller.id,
-            email: seller.email,
-            name: seller.name,
-            avatarUrl: seller.avatarUrl,
-            phoneNumber: seller.phoneNumber
+        trader: {
+            id: trader.id,
+            email: trader.email,
+            name: trader.name,
+            avatarUrl: trader.avatarUrl,
+            phoneNumber: trader.phoneNumber
         },
     };
 };

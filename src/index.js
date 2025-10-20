@@ -6,6 +6,11 @@ import morgan from 'morgan';
 import rateLimit from './middlewares/rateLimiter.js';
 import errorHandler from './middlewares/errorHandler.js';
 import authRoutes from './routes/auth.js';
+import traderRoutes from './routes/traderRoutes.js';
+import productCategoryRoutes from './routes/productCategoryRoutes.js';
+import productRoutes from './routes/productRoutes.js';
+import customerRoutes from './routes/customerRoutes.js';
+import customerCreditsRoutes from './routes/customerCreditsRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -21,6 +26,13 @@ app.use(rateLimit);
 app.use('/uploads', express.static('uploads'));
 
 app.use('/auth', authRoutes);
+app.use("/api/traders", traderRoutes);
+app.use("/api/categories", productCategoryRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/customers", customerRoutes);
+app.use('/api/customer-credits', customerCreditsRoutes);
+
+
 app.use(errorHandler);
 
 
