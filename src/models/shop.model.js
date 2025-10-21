@@ -10,13 +10,7 @@ export const ShopModel = {
     return prisma.shop.findUnique({
       where: { id },
       include: {
-        trader: {
-          include: {
-            user: true,
-          },
-        },
         expenses: true,
-        sales: true,
       },
     });
   },

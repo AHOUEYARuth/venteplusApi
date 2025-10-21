@@ -1,3 +1,4 @@
+import { ShopModel } from '../models/shop.model.js';
 import * as authService from '../services/authService.js';
 
 export async function register(req, res, next) {
@@ -23,14 +24,15 @@ export async function login(req, res, next) {
     try {
         
         if (req.body.shopId) {
-            const { token, trader } = await authService.login(req.body);
-
+            const { token, user } = await authService.login(req.body);
+            const shop = await ShopModel.findById(req.body.shopId);
             res.json({
               success: true,
               data: {
                 token,
+                shop,
                 user: {
-                  ...trader,
+                  ...user,
                 },
               },
             });
