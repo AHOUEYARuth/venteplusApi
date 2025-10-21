@@ -25,7 +25,7 @@ app.use(rateLimit);
 
 app.use('/uploads', express.static('uploads'));
 
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use("/api/traders", traderRoutes);
 app.use("/api/categories", productCategoryRoutes);
 app.use("/api/products", productRoutes);

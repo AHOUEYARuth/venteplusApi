@@ -11,5 +11,5 @@ router.post('/register',   upload.fields([
     { name: 'logo', maxCount: 1 },
     { name: 'identityCard', maxCount: 1 },
     { name: 'imageShop', maxCount: 1 },
-  ]), registerValidation, validateRequest, TraderController.register);
+  ]),  TraderController.register);
 export default router;

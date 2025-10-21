@@ -21,23 +21,34 @@ export async function register(req, res, next) {
 
 export async function login(req, res, next) {
     try {
-        const {
-            token,
-            seller
-        } = await authService.login(req.body);
-        res.json({
-            success: true,
-            data: {
+        
+        if (req.body.shopId) {
+            const { token, trader } = await authService.login(req.body);
+
+            res.json({
+              success: true,
+              data: {
                 token,
-                seller: {
-                    id: seller.id,
-                    email: seller.email,
-                    avatarUrl: seller.avatarUrl,
-                    name: seller.name,
-                    phoneNumber: seller.phoneNumber
-                }
-            }
-        });
+                user: {
+                  ...trader,
+                },
+              },
+            });
+
+        } else {
+            const { shops } = await authService.login(req.body);
+            console.log(shops);
+            
+
+            res.json({
+              success: true,
+              data: {
+                  shops: shops
+              },
+            });
+
+        }
+        
     } catch (err) {
         next(err);
     }

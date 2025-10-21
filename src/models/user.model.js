@@ -7,7 +7,7 @@ export const UserModel = {
   },
 
     async findByPhoneNumber(phoneNumber) {
-    return prisma.user.findUnique({ where: { phoneNumber } });
+      return prisma.user.findUnique({ where: { phoneNumber }, include:{trader: true}});
   },
 
   async findById(id) {

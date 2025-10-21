@@ -7,17 +7,17 @@ export const ShopModel = {
   },
 
   async findById(id) {
-    return prisma.shop.findUnique({ 
+    return prisma.shop.findUnique({
       where: { id },
       include: {
         trader: {
           include: {
-            user: true
-          }
+            user: true,
+          },
         },
         expenses: true,
-        sales: true
-      }
+        sales: true,
+      },
     });
   },
 
@@ -34,20 +34,24 @@ export const ShopModel = {
       include: {
         trader: {
           include: {
-            user: true
-          }
-        }
-      }
+            user: true,
+          },
+        },
+      },
     });
   },
 
   async findByTrader(traderId) {
-    return prisma.shop.findMany({ 
+    return prisma.traderShop.findMany({
       where: { traderId },
       include: {
-        expenses: true,
-        sales: true
-      }
+        shop: {
+          include: {
+            expenses: true,
+          },
+        },
+        trader: true,
+      },
     });
-  }
+  },
 };

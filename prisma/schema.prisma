@@ -43,22 +43,59 @@ model Admin {
 }
 
 
+model Shop {
+  id                 String @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  description        String
+  logo               String?
+  address            String
+  image              String?
+  interventionArea   String
+
+  traderShops        TraderShop[]
+
+  order              Order[]
+  expenses           Expenses[]
+  products           Product[]
+  customers          Customers[]
+  productCategories  ProductCategory[]
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("shops")
+}
+
 model Trader {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   identityCard String
   userId       String @unique @db.ObjectId
   role         String @default("TRADER")
-  
-  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  shop   Shop? @relation(name: "ShopToTrader")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  traderShops  TraderShop[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("traders")
 }
 
- 
+model TraderShop {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+
+  traderId  String @db.ObjectId
+  shopId    String @db.ObjectId
+
+  trader    Trader @relation(fields: [traderId], references: [id], onDelete: Cascade)
+  shop      Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  @@map("trader_shops")
+} 
+
+
 model Customers {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String
@@ -111,28 +148,6 @@ model Recovery {
 
 
 
-model Shop {
-  id                 String @id @default(auto()) @map("_id") @db.ObjectId
-  name               String
-  description        String
-  logo               String?
-  address            String
-  image              String
-  interventionArea String
-  traderId           String @unique @db.ObjectId
-  
-  trader      Trader  @relation(name: "ShopToTrader", fields: [traderId], references: [id], onDelete: Cascade)
-  order        Order[]
-  expenses Expenses[]
-  products Product[]
-  customers Customers[]
-  productCategories ProductCategory[]
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("shops")
-}
 
  
 

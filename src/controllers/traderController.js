@@ -8,7 +8,9 @@ export const TraderController = {
       const logo = req.files?.["logo"]?.[0];
       const identityCard = req.files?.["identityCard"]?.[0];
       const imageShop = req.files?.["imageShop"]?.[0];
- 
+      console.log("avatar:");
+      console.log(req.files)
+      
       const data = {
         ...req.body,
         avatarUrl: avatar ? avatar.path : null,

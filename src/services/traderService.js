@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import { TraderModel } from "../models/trader.model.js";
 import { ShopModel } from "../models/shop.model.js";
 import { UserModel } from "../models/user.model.js";
+import { UserRole } from "@prisma/client";
+import prisma from "../prismaClient.js";
 
 export const TraderService = {
   async registerTrader(data) {
@@ -38,6 +40,7 @@ export const TraderService = {
       phoneNumber,
       password: hashedPassword,
       avatarUrl,  
+      role:UserRole.TRADER
     });
 
  
@@ -55,7 +58,13 @@ export const TraderService = {
       interventionArea,
       logo: logoUrl,        
       image: imageShopUrl, 
-      traderId: trader.id,
+      
+    });
+    await prisma.traderShop.create({
+      data: {
+        traderId: trader.id,
+        shopId: shop.id,
+      },
     });
 
     return { user, trader, shop };
