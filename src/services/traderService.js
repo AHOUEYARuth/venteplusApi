@@ -15,6 +15,7 @@ export const TraderService = {
       identityCardUrl,
       shopName,
       shopDescription,
+      interventionArea,
       shopAddress,
       avatarUrl,
       logoUrl,
@@ -37,13 +38,13 @@ export const TraderService = {
       phoneNumber,
       password: hashedPassword,
       avatarUrl,  
-      role,
     });
 
  
     const trader = await TraderModel.create({
-      identityCard: identityCardUrl,  
+      identityCard: identityCardUrl,
       userId: user.id,
+      role,
     });
 
      
@@ -51,6 +52,7 @@ export const TraderService = {
       name: shopName,
       address: shopAddress,
       description: shopDescription,
+      interventionArea,
       logo: logoUrl,        
       image: imageShopUrl, 
       traderId: trader.id,

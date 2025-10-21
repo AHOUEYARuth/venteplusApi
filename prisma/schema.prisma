@@ -12,8 +12,8 @@ model User {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   firstName    String
-  email        String   @unique
-  phoneNumber  String
+  email        String?   
+  phoneNumber  String @unique
   password     String
   avatarUrl String? 
   dateCreator  DateTime @default(now())
@@ -118,7 +118,7 @@ model Shop {
   logo               String?
   address            String
   image              String
-  interpretationArea String
+  interventionArea String
   traderId           String @unique @db.ObjectId
   
   trader      Trader  @relation(name: "ShopToTrader", fields: [traderId], references: [id], onDelete: Cascade)
