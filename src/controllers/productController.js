@@ -7,7 +7,9 @@ export const ProductController = {
       const product = await ProductService.createProduct({
         ...req.body,
         image: image ? `uploads/products/${image.filename}` : null,
-
+       /*  category: {
+          connect: { id: req.body.categoryId }, 
+        }, */
       });
       return res.status(201).json({
         message: "Produit créé avec succès ✅",

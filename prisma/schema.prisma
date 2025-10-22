@@ -224,12 +224,13 @@ model Product {
   id                String   @id @default(auto()) @map("_id") @db.ObjectId
   name              String
   description       String
-  image             String
+  image             String?
   availableQuantity Int
   minimumQuantity   Int
   purchasePrice     Float
   salePrice         Float
   unitMeasurement   String?
+  additionalCosts   Float?
   categoryId        String   @db.ObjectId
   shopId            String   @db.ObjectId
   
