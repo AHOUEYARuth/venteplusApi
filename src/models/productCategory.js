@@ -34,7 +34,6 @@ export const ProductCategoryModel = {
   async findAllByShop(shopId) {
     return prisma.productCategory.findMany({
       where: { shopId },
-      include: { products: true },
       orderBy: { createdAt: "desc" },
     });
   },
