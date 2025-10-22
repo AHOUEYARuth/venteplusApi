@@ -30,7 +30,7 @@ export const CustomerCreditsController = {
       const { shopId } = req.params; // shopId passé en param
       const { customerId, name, startDate, endDate } = req.query;
 
-      const credits = await CustomerCreditsService.listCreditsByShop({
+      const credits = await CustomerCreditsService.listCreditsByShop({  
         shopId,
         customerId,
         name,

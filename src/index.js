@@ -16,6 +16,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+app.use(cors({
+  origin: [`http://localhost:${PORT}`, `http://127.0.0.1:${PORT}`],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use(helmet());
 app.use(cors());
@@ -23,7 +29,15 @@ app.use(express.json());
 app.use(morgan('combined'));
 app.use(rateLimit);
 
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('uploads', {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.png') || path.endsWith('.gif')) {
+      res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+      res.set('Cache-Control', 'public, max-age=31557600'); 
+    }
+  }
+}));
+
 
 app.use('/api/auth', authRoutes);
 app.use("/api/traders", traderRoutes);
