@@ -8,6 +8,11 @@ export const ProductController = {
       const product = await ProductService.createProduct({
         ...req.body,
         image: image ? image.path : null,
+        availableQuantity: parseInt(req.body.availableQuantity, 10),
+        minimumQuantity: parseInt(req.body.minimumQuantity, 10),
+        purchasePrice: parseInt(req.body.purchasePrice, 10),
+        salePrice: parseInt(req.body.salePrice, 10),
+        additionalCosts: parseInt(req.body.additionalCosts, 10),
       });
       return res.status(201).json({
         message: "Produit créé avec succès ✅",
