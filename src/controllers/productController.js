@@ -4,10 +4,13 @@ export const ProductController = {
   async create(req, res) {
     try {
       // const productImage = req.file;
-      const image = req.files?.["image"]?.[0];
+      const image = req.file;
+      const uploadUrl = req.file ? `uploads/products/${image.filename}` : null;
+      console.log("Uploaded image:", uploadUrl);
+      
       const product = await ProductService.createProduct({
         ...req.body,
-        image: image ? image.path : null,
+        image: uploadUrl,
         availableQuantity: parseInt(req.body.availableQuantity, 10),
         minimumQuantity: parseInt(req.body.minimumQuantity, 10),
         purchasePrice: parseInt(req.body.purchasePrice, 10),
