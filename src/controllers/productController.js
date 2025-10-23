@@ -4,10 +4,10 @@ export const ProductController = {
   async create(req, res) {
     try {
       // const productImage = req.file;
-      const productImage = req.files?.["productImage"]?.[0];
+      const image = req.files?.["image"]?.[0];
       const product = await ProductService.createProduct({
         ...req.body,
-        image: productImage ? productImage.path : null,
+        image: image ? image.path : null,
       });
       return res.status(201).json({
         message: "Produit créé avec succès ✅",

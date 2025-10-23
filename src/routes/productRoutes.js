@@ -4,8 +4,8 @@ import upload from "../middlewares/upload.js";
 
 const router = express.Router();
 
- 
-router.post("/", upload.single("productImage"),ProductController.create);
+
+router.post("/", upload.single("image"), ProductController.create);
 router.put("/:id", ProductController.update);
 router.delete("/:id", ProductController.delete);
 router.get("/shop/:shopId", ProductController.getByShop);

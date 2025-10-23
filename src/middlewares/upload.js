@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
       case "imageShop":
         folder = "uploads/imageBoutiques";
         break;
-      case "productImage":
+      case "image":
         folder = "uploads/products";
         break;
     }
