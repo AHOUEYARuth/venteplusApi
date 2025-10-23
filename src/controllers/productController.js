@@ -3,10 +3,10 @@ import { ProductService } from "../services/productService.js";
 export const ProductController = {
   async create(req, res) {
     try {
-      const image = req.file;
+      const productImage = req.file;
       const product = await ProductService.createProduct({
         ...req.body,
-        image: image ? `uploads/products/${image.filename}` : null,
+        image: productImage ? `uploads/products/${productImage.filename}` : null,
        /*  category: {
           connect: { id: req.body.categoryId }, 
         }, */
