@@ -57,6 +57,8 @@ export const ProductController = {
   async getByShop(req, res) {
     try {
       const { shopId } = req.params;
+      console.log(req.params);
+      console.log(req.query);
       const { name, categoryId, dateFrom, dateTo } = req.query;
       const filters = { name, categoryId, dateFrom, dateTo };
       const products = await ProductService.getProductsByShop(shopId, filters);

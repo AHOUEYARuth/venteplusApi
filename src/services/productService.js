@@ -43,7 +43,9 @@ export const ProductService = {
     if (!shopId) {
       throw new Error("L'ID de la boutique est requis");
     }
-
+    console.log("filters");
+    console.log(filters)
+    
     return ProductModel.findByShop(shopId, filters);
   },
  
