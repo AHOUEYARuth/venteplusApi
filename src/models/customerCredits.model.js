@@ -1,53 +1,61 @@
-// models/CustomerCreditsModel.js
 import prisma from "../prismaClient.js";
+import { ObjectId } from "bson";
 
 export const CustomerCreditsModel = {
-  /**
-   * Crée un crédit client
-   * @param {Object} data - totalAmountToPay, customerId, amountPaid (optionnel)
-   */
   async create(data) {
     return prisma.customerCredits.create({ data });
   },
 
-  /**
-   * Supprime un crédit client par ID
-   * @param {string} id
-   */
-  async delete(id) {
-    return prisma.customerCredits.delete({ where: { id } });
-  },
+  async findAll(shopId,filters = {}) {
+    const { name, dateFrom, dateTo } = filters;
 
-  /**
-   * Liste les crédits d'une boutique avec filtres optionnels
-   * @param {Object} params - { shopId, customerId?, name?, startDate?, endDate? }
-   */
-  async findByShop({ shopId, customerId, name, startDate, endDate }) {
+    // Construction dynamique du filtre
     const where = {
-      customer: {
-        shopId,
-        ...(customerId && { id: customerId }),
-        ...(name && {
+       shopId,
+      ...(dateFrom || dateTo
+        ? {
+            createdAt: {
+              ...(dateFrom && { gte: new Date(dateFrom) }),
+              ...(dateTo && { lte: new Date(dateTo) }),
+            },
+          }
+        : {}),
+      ...(name && {
+        customer: {
           OR: [
             { name: { contains: name, mode: "insensitive" } },
-            { firstName: { contains: name, mode: "insensitive" } }
-          ]
-        })
-      },
-      ...(startDate || endDate) && {
-        createdAt: {
-          ...(startDate && { gte: new Date(startDate) }),
-          ...(endDate && { lte: new Date(endDate) })
-        }
-      }
+            { firstName: { contains: name, mode: "insensitive" } },
+          ],
+        },
+      }),
     };
 
     return prisma.customerCredits.findMany({
       where,
       include: {
-        customer: true
+        customer: true,
+        order: true,
+        shop: true,
       },
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: "desc" },
     });
-  }
+  },
+
+  async findById(id) {
+    return prisma.customerCredits.findUnique({
+      where: { id },
+      include: { customer: true, order: true, shop: true },
+    });
+  },
+
+  async update(id, data) {
+    return prisma.customerCredits.update({
+      where: { id },
+      data,
+    });
+  },
+
+  async delete(id) {
+    return prisma.customerCredits.delete({ where: { id } });
+  },
 };

@@ -1,4 +1,3 @@
-// models/OrderModel.js
 import prisma from "../prismaClient.js";
 
 export const OrderModel = {
@@ -7,55 +6,37 @@ export const OrderModel = {
   },
 
   async findById(id) {
-    return prisma.order.findUnique({ 
+    return prisma.order.findUnique({
       where: { id },
       include: {
         customer: true,
-        toOrders: {
-          include: {
-            product: true
-          }
-        },
-        sales: true
-      }
+        shop: true,
+        customerCredit: true,
+      },
+    });
+  },
+
+  async findByShop(shopId,isPaid) {
+    return prisma.order.findMany({
+      where: { shopId ,isPaid},
+      include: {
+        customer: true,
+        customerCredit: true,
+      },
+      orderBy: { createdAt: "desc" },
     });
   },
 
   async update(id, data) {
-    return prisma.order.update({ where: { id }, data });
+    return prisma.order.update({
+      where: { id },
+      data,
+    });
   },
 
   async delete(id) {
-    return prisma.order.delete({ where: { id } });
-  },
-
-  async findAll() {
-    return prisma.order.findMany({
-      include: {
-        customer: true,
-        toOrders: {
-          include: {
-            product: true
-          }
-        }
-      }
+    return prisma.order.delete({
+      where: { id },
     });
   },
-
-  async findByCustomer(customerId) {
-    return prisma.order.findMany({ 
-      where: { customerId },
-      include: {
-        toOrders: {
-          include: {
-            product: true
-          }
-        }
-      }
-    });
-  },
-
-  async findByStatus(status) {
-    return prisma.order.findMany({ where: { status } });
-  }
 };

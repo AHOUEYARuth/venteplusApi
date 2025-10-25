@@ -51,11 +51,12 @@ model Shop {
   address            String
   image              String?
   interventionArea   String
-
+  
   traderShops        TraderShop[]
 
   order              Order[]
   expenses           Expenses[]
+  credits            CustomerCredits[]
   products           Product[]
   customers          Customers[]
   productCategories  ProductCategory[]
@@ -96,18 +97,20 @@ model TraderShop {
 } 
 
 
+
+//============================== Order and Product Models =============================//
+
 model Customers {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   firstName    String
   email        String?
   phoneNumber  String?
-  shopId       String   @db.ObjectId 
+  shopId       String   @db.ObjectId
 
-  shop            Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  customerCredits CustomerCredits[]
-  orders          Order[]
-
+  shop              Shop               @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customerCredits   CustomerCredits[]  // ✅ Un client peut avoir plusieurs crédits
+  orders            Order[]            // ✅ Un client peut avoir plusieurs commandes
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -115,23 +118,111 @@ model Customers {
   @@map("customers")
 }
 
+model Order {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  totalAmount     Float
+  totalInputIndex String
+  deliveryAddress String
+  status          OrderStatus
+  orderDate       DateTime @default(now())
+  customerId      String   @db.ObjectId
+  shopId          String   @db.ObjectId
+  isSale          Boolean  @default(false)
+  
+  customer  Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  toOrders  ToOrder[]
+
+  customerCredit CustomerCredits? @relation("OrderToCustomerCredit")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("orders")
+}
+
 model CustomerCredits {
-  id               String  @id @default(auto()) @map("_id") @db.ObjectId
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
   totalAmountToPay Float
-  isPaid           Boolean @default(false)
-  amountPaid        Float   @default(0)
-  customerId       String  @db.ObjectId
+  isPaid           Boolean  @default(false)
+  amountPaid       Float    @default(0)
   
-  
+  customerId       String   @db.ObjectId
+  orderId          String   @unique @db.ObjectId  
+  shopId          String   @db.ObjectId
+
+ 
   customer Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  order    Order     @relation("OrderToCustomerCredit", fields: [orderId], references: [id], onDelete: Cascade)
+
   recoveries Recovery[]
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("customer_credits")
 }
 
+
+
+// model Order {
+//   id              String   @id @default(auto()) @map("_id") @db.ObjectId
+//   totalAmount     Float
+//   totalInputIndex String
+//   deliveryAddress String
+//   status          OrderStatus
+//   orderDate       DateTime @default(now())
+//   customerId      String   @db.ObjectId
+//   shopId          String   @db.ObjectId
+//   isSale         Boolean  @default(false)
+  
+//   customer    Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
+//   shop        Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+//   toOrders    ToOrder[]
+   
+  
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@map("orders")
+// } 
+// model Customers {
+//   id              String   @id @default(auto()) @map("_id") @db.ObjectId
+//   name         String
+//   firstName    String
+//   email        String?
+//   phoneNumber  String?
+//   shopId       String   @db.ObjectId 
+
+//   shop            Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+//   customerCredits CustomerCredits[]
+//   orders          Order[]
+
+  
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@map("customers")
+// }
+
+// model CustomerCredits {
+//   id               String  @id @default(auto()) @map("_id") @db.ObjectId
+//   totalAmountToPay Float
+//   isPaid           Boolean @default(false)
+//   amountPaid        Float   @default(0)
+//   customerId       String  @db.ObjectId
+  
+  
+//   customer Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
+//   recoveries Recovery[]
+  
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@map("customer_credits")
+// }
+//============================== Order and Product Models =============================//
 model Recovery {
   id               String @id @default(auto()) @map("_id") @db.ObjectId
   amountPaid        Float
@@ -183,27 +274,7 @@ model ActivityHistoric {
 
 
 //============================== Order and Product Models =============================//
-model Order {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  totalAmount     Float
-  totalInputIndex String
-  deliveryAddress String
-  status          OrderStatus
-  orderDate       DateTime @default(now())
-  customerId      String   @db.ObjectId
-  shopId          String   @db.ObjectId
-  isSale         Boolean  @default(false)
-  
-  customer    Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  shop        Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  toOrders    ToOrder[]
-   
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  @@map("orders")
-}
 
 model ToOrder {
   id        String @id @default(auto()) @map("_id") @db.ObjectId

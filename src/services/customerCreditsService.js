@@ -1,19 +1,23 @@
 import { CustomerCreditsModel } from "../models/customerCredits.model.js";
 
-
 export const CustomerCreditsService = {
-  async createCredit(data) {
-    return CustomerCreditsModel.create(data);
+  async createCustomerCredit(data) {
+    return await CustomerCreditsModel.create(data);
   },
 
-  async deleteCredit(id) {
-    const credit = await CustomerCreditsModel.findById(id);
-    if (!credit) throw new Error("Crédit client non trouvé");
-    return CustomerCreditsModel.delete(id);
+  async getAllCustomerCredits(shopId,filters) {
+    return await CustomerCreditsModel.findAll(shopId,filters);
   },
 
-  async listCreditsByShop({ shopId, customerId, name, startDate, endDate }) {
-    if (!shopId) throw new Error("shopId est requis");
-    return CustomerCreditsModel.findByShop({ shopId, customerId, name, startDate, endDate });
-  }
+  async getCustomerCreditById(id) {
+    return await CustomerCreditsModel.findById(id);
+  },
+
+  async updateCustomerCredit(id, data) {
+    return await CustomerCreditsModel.update(id, data);
+  },
+
+  async deleteCustomerCredit(id) {
+    return await CustomerCreditsModel.delete(id);
+  },
 };
