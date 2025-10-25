@@ -22,13 +22,8 @@ export const CustomerController = {
 
   async listCustomers(req, res) {
     try {
-      const { shopId } = req.query;
-      let customers;
-      if (shopId) {
-        customers = await CustomerService.listCustomersByShop(shopId);
-      } else {
-        customers = await CustomerService.listCustomers();
-      }
+      const { shopId } = req.params;
+      var customers = await CustomerService.listCustomersByShop(shopId);
       return res.status(200).json({ message: "Liste des clients ✅", data: customers });
     } catch (error) {
       return res.status(400).json({ message: error.message });

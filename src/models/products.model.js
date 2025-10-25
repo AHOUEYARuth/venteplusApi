@@ -1,4 +1,5 @@
 import prisma from "../prismaClient.js";
+import { ObjectId } from "bson"; 
 
 export const ProductModel = {
   
@@ -40,33 +41,33 @@ export const ProductModel = {
     });
   },
 
-  async findByShop(shopId, filters = {}) {
-  const { name, categoryId, dateFrom, dateTo } = filters;
+  // async findByShop(shopId, filters = {}) {
+  // const { name, categoryId, dateFrom, dateTo } = filters;
 
-  // Construction dynamique du where
-  const where = {
-    shopId,
-    ...(name && { name: { contains: name, mode: "insensitive" } }),
-    ...(categoryId && { categoryId }),
-    ...(dateFrom || dateTo
-      ? {
-          createdAt: {
-            ...(dateFrom && { gte: new Date(dateFrom) }),
-            ...(dateTo && { lte: new Date(dateTo) }),
-          },
-        }
-      : {}),
-  };
+  // // Construction dynamique du where
+  // const where = {
+  //   shopId,
+  //   ...(name && { name: { contains: name, mode: "insensitive" } }),
+  //   ...(categoryId && { categoryId: new ObjectId(categoryId) }),
+  //   ...(dateFrom || dateTo
+  //     ? {
+  //         createdAt: {
+  //           ...(dateFrom && { gte: new Date(dateFrom) }),
+  //           ...(dateTo && { lte: new Date(dateTo) }),
+  //         },
+  //       }
+  //     : {}),
+  // };
 
-    return prisma.product.findMany({
-      where,
-      include: {
-        category: true,
-        shop: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
-  },
+  //   return prisma.product.findMany({
+  //     where,
+  //     include: {
+  //       category: true,
+  //       shop: true,
+  //     },
+  //     orderBy: { createdAt: "desc" },
+  //   });
+  // },
   
   async findByCategory(categoryId) {
     return prisma.product.findMany({
@@ -75,9 +76,23 @@ export const ProductModel = {
     });
   },
  
-  async findByShop(shopId) {
+  async findByShop(shopId,filters = {}) {
+   const { name, categoryId, dateFrom, dateTo } = filters;
+   const where = {
+    shopId,
+    ...(name && { name: { contains: name, mode: "insensitive" } }),
+    ...(categoryId && { categoryId: new ObjectId(categoryId) }),
+    ...(dateFrom || dateTo
+      ? {
+          createdAt: {
+            ...(dateFrom && { gte: dateFrom }),
+            ...(dateTo && { lte: dateTo }),
+          },
+        }
+      : {}),
+    };
     return prisma.product.findMany({
-      where: { shopId },
+      where,
       include: { category: true },
       orderBy: { createdAt: "desc" },
     });
