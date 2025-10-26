@@ -1,38 +1,45 @@
-// models/RecoveryModel.js
 import prisma from "../prismaClient.js";
 
 export const RecoveryModel = {
-  async create(data) {
-    return prisma.recovery.create({ data });
-  },
-
-  async findById(id) {
-    return prisma.recovery.findUnique({ 
-      where: { id },
+  async create(data, tx = prisma) {
+    return tx.recovery.create({
+      data,
       include: {
-        customerCredit: {
-          include: {
-            customer: true
-          }
-        }
-      }
+        customerCredit: { include: { customer: true, shop: true, order: true } },
+      },
     });
   },
 
-  async update(id, data) {
-    return prisma.recovery.update({ where: { id }, data });
-  },
-
-  async delete(id) {
-    return prisma.recovery.delete({ where: { id } });
-  },
-
-  async findByCustomerCredit(customerCreditId) {
-    return prisma.recovery.findMany({ 
+  async findByCustomerCredit(customerCreditId, tx = prisma) {
+    return tx.recovery.findMany({
       where: { customerCreditId },
       include: {
-        customerCredit: true
-      }
+        customerCredit: { include: { customer: true, shop: true, order: true } },
+      },
+      orderBy: { createdAt: "desc" },
     });
-  }
+  },
+
+  async findById(id, tx = prisma) {
+    return tx.recovery.findUnique({
+      where: { id },
+      include: {
+        customerCredit: { include: { customer: true, shop: true, order: true } },
+      },
+    });
+  },
+
+  async update(id, data, tx = prisma) {
+    return tx.recovery.update({
+      where: { id },
+      data,
+      include: {
+        customerCredit: { include: { customer: true, shop: true, order: true } },
+      },
+    });
+  },
+
+  async delete(id, tx = prisma) {
+    return tx.recovery.delete({ where: { id } });
+  },
 };

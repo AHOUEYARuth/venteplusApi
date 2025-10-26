@@ -13,6 +13,7 @@ import customerRoutes from './routes/customerRoutes.js';
 import customerCreditsRoutes from './routes/customerCreditsRoutes.js';
 import expensesRoutes from './routes/expenses.routes.js';
 import orderRoutes from './routes/order.routes.js';
+import recoveryRoutes from './routes/recovery.routes.js';
 
 dotenv.config();
 const app = express();
@@ -43,6 +44,7 @@ app.use("/api/customers", customerRoutes);
 app.use('/api/customer-credits', customerCreditsRoutes);
 app.use('/api/expenses',expensesRoutes);
 app.use('/api/orders',orderRoutes)
+app.use('/api/recoveries', recoveryRoutes);
 
 
 app.use(errorHandler);
