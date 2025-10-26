@@ -1,10 +1,20 @@
 import { CustomerCreditsModel } from "../models/customerCredits.model.js";
+import prisma from "../prismaClient.js";
 
 export const CustomerCreditsService = {
+ 
   async createCustomerCredit(data) {
-    return await CustomerCreditsModel.create(data);
+    return prisma.customerCredits.create({
+      data: {
+        totalAmountToPay: data.totalAmountToPay,
+        isPaid: false,
+        amountPaid: 0,
+        customerId: data.customerId,
+        orderId: data.orderId,
+        shopId: data.shopId,
+      },
+    });
   },
-
   async getAllCustomerCredits(shopId,filters) {
     return await CustomerCreditsModel.findAll(shopId,filters);
   },

@@ -121,7 +121,6 @@ model Customers {
 model Order {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   totalAmount     Float
-  totalInputIndex String
   deliveryAddress String
   status          OrderStatus
   orderDate       DateTime @default(now())

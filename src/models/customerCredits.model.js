@@ -34,8 +34,10 @@ export const CustomerCreditsModel = {
       where,
       include: {
         customer: true,
-        order: true,
-        shop: true,
+        order: {
+          include: { toOrders : { include: { product: true } } },
+        },
+        shop: true
       },
       orderBy: { createdAt: "desc" },
     });

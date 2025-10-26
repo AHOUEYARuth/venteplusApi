@@ -21,7 +21,7 @@ export const CustomerCreditsController = {
       };
 
       const credits = await CustomerCreditsService.getAllCustomerCredits(shopId,filters);
-      res.json(credits);
+      res.json({ success: true, data: credits });
     } catch (error) {
       res.status(500).json({ message: "Erreur lors de la récupération des crédits", error });
     }
