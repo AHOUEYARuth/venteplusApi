@@ -3,7 +3,7 @@ import { ProductService } from "../services/productService.js";
 export const ProductController = {
   async create(req, res) {
     try {
-      // const productImage = req.file;
+     
       const image = req.file;
       const uploadUrl = req.file ? `uploads/products/${image.filename}` : null;
       console.log("Uploaded image:", uploadUrl);

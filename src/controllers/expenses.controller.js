@@ -1,7 +1,7 @@
 import { ExpensesService } from "../services/expenses.service.js";
 
 export const ExpensesController = {
-  // ➕ Créer une dépense
+  
   async create(req, res) {
     try {
       const expense = await ExpensesService.createExpense(req.body);
@@ -15,12 +15,13 @@ export const ExpensesController = {
       return res.status(400).json({ success: false, message: error.message });
     }
   },
-
-  // 📋 Lister les dépenses d'une boutique
+ 
   async list(req, res) {
     try {
       const { shopId } = req.params;
-      const expenses = await ExpensesService.getExpensesByShop(shopId);
+      const { dateFrom, dateTo } = req.query;
+      const filters = { dateFrom, dateTo };
+      const expenses = await ExpensesService.getExpensesByShop(shopId,filters);
       return res.status(200).json({
         success: true,
         data: expenses,
@@ -31,7 +32,7 @@ export const ExpensesController = {
     }
   },
 
-  // 🔍 Détail d'une dépense
+ 
   async getById(req, res) {
     try {
       const { id } = req.params;
@@ -46,7 +47,7 @@ export const ExpensesController = {
     }
   },
 
-  // ✏️ Modifier une dépense
+  
   async update(req, res) {
     try {
       const { id } = req.params;
@@ -62,7 +63,7 @@ export const ExpensesController = {
     }
   },
 
-  // ❌ Supprimer une dépense
+   
   async remove(req, res) {
     try {
       const { id } = req.params;

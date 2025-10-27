@@ -4,10 +4,22 @@ export const ExpensesModel = {
   async create(data) {
     return prisma.expenses.create({ data });
   },
-
-  async findAll(shopId) {
+  
+  async findAll(shopId,filters = {}) {
+    const { dateFrom, dateTo } = filters;
+    const where = {
+    shopId,
+    ...(dateFrom || dateTo
+      ? {
+          createdAt: {
+            ...(dateFrom && { gte: new Date(dateFrom.split("-").reverse().join("-"))  }),
+            ...(dateTo && { lte: new Date(dateTo.split("-").reverse().join("-")) }),
+          },
+        }
+      : {}),
+    };
     return prisma.expenses.findMany({
-      where: { shopId },
+      where,
       orderBy: { createdAt: "desc" },
     });
   },

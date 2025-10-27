@@ -8,15 +8,14 @@ export const CustomerCreditsModel = {
 
   async findAll(shopId,filters = {}) {
     const { name, dateFrom, dateTo } = filters;
-
-    // Construction dynamique du filtre
+ 
     const where = {
        shopId,
       ...(dateFrom || dateTo
         ? {
             createdAt: {
-              ...(dateFrom && { gte: new Date(dateFrom) }),
-              ...(dateTo && { lte: new Date(dateTo) }),
+              ...(dateFrom && { gte: new Date(dateFrom.split("-").reverse().join("-")) }),
+              ...(dateTo && { lte: new Date(dateTo.split("-").reverse().join("-")) }),
             },
           }
         : {}),

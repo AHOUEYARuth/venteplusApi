@@ -23,7 +23,12 @@ export const CustomerController = {
   async listCustomers(req, res) {
     try {
       const { shopId } = req.params;
-      var customers = await CustomerService.listCustomersByShop(shopId);
+      const filters = {
+        name: req.query.name || null,
+        dateFrom: req.query.dateFrom || null,
+        dateTo: req.query.dateTo || null,
+      };
+      var customers = await CustomerService.listCustomersByShop(shopId,filters);
       return res.status(200).json({ message: "Liste des clients ✅", data: customers });
     } catch (error) {
       return res.status(400).json({ message: error.message });

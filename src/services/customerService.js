@@ -17,7 +17,7 @@ export const CustomerService = {
     return CustomerModel.findAll();
   },
 
-  async listCustomersByShop(shopId) {
-    return CustomerModel.findByShop(shopId);
+  async listCustomersByShop(shopId,filters = {}) {
+    return CustomerModel.findByShop(shopId,filters);
   }
 };

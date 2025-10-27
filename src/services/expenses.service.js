@@ -5,8 +5,8 @@ export const ExpensesService = {
     return await ExpensesModel.create(data);
   },
 
-  async getExpensesByShop(shopId) {
-    return await ExpensesModel.findAll(shopId);
+  async getExpensesByShop(shopId,filters = {}) {
+    return await ExpensesModel.findAll(shopId,filters);
   },
 
   async getExpenseById(id) {
