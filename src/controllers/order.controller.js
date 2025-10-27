@@ -60,6 +60,7 @@ export const OrderController = {
         status: req.query.status || null,
         dateFrom: req.query.dateFrom || null,
         dateTo: req.query.dateTo || null,
+        search: req.query.search || null,
         isSale: req.query.isSale === "true" ? true : req.query.isSale === "false" ? false : undefined,
       };
       const statistics = await OrderService.computeStatistics(shopId, filters.isSale);

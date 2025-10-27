@@ -18,7 +18,7 @@ export const OrderModel = {
   },
 
   async findAll(shopId,filters = {}) {
-    const { customerId, status, dateFrom, dateTo, isSale } = filters;
+    const { customerId, status, dateFrom, dateTo, isSale,search } = filters;
 
     const where = {
       shopId,
@@ -28,11 +28,34 @@ export const OrderModel = {
       ...(dateFrom || dateTo
         ? {
             orderDate: {
-              ...(dateFrom && { gte: new Date(dateFrom) }),
-              ...(dateTo && { lte: new Date(dateTo) }),
+              ...(dateFrom && { gte: new Date(dateFrom.split("-").reverse().join("-")) }),
+              ...(dateTo && { lte: new Date(dateTo.split("-").reverse().join("-")) }),
             },
           }
         : {}),
+    ...(search && {
+      OR: [
+       
+        {
+          customer: {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { firstName: { contains: search, mode: "insensitive" } },
+            ],
+          },
+        },
+    
+        {
+          toOrders: {
+            some: {
+              product: {
+                name: { contains: search, mode: "insensitive" },
+              },
+            },
+          },
+        },
+      ],
+    }),
     };
 
     return prisma.order.findMany({
