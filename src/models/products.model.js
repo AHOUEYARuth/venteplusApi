@@ -81,19 +81,19 @@ export const ProductModel = {
    const where = {
     shopId,
     ...(name && { name: { contains: name, mode: "insensitive" } }),
-    ...(categoryId && { categoryId: new ObjectId(categoryId) }),
+    ...(categoryId && { categoryId: categoryId }),
     ...(dateFrom || dateTo
       ? {
           createdAt: {
-            ...(dateFrom && { gte: dateFrom }),
-            ...(dateTo && { lte: dateTo }),
+            ...(dateFrom && { gte: new Date(dateFrom.split("-").reverse().join("-"))  }),
+            ...(dateTo && { lte: new Date(dateTo.split("-").reverse().join("-")) }),
           },
         }
       : {}),
     };
     return prisma.product.findMany({
       where,
-      include: { category: true },
+      include: {category:true},
       orderBy: { createdAt: "desc" },
     });
   },
