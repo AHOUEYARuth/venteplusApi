@@ -11,10 +11,9 @@ const SALT_ROUNDS = 10;
 
 function signToken(payload) {
     return jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN || '1h'
+        expiresIn:"30d"
     });
 }
-
 
 
 export async function login({
@@ -50,7 +49,7 @@ export async function login({
          };
     } else {
          const token = signToken({
-           sub: user.id,
+           id: user.id.toString(),
            phoneNumber: user.phoneNumber,
          });
 
