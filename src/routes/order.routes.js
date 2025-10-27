@@ -11,5 +11,6 @@ router.delete("/:id", OrderController.delete);
 router.get("/statistics/:shopId", OrderController.getStatistics);
 router.get("/month-sales/:shopId", OrderController.getMonthlySales);
 router.get("/days-statistics/:shopId", OrderController.getDaysStatistics);
+router.get("/cancel/:orderId", OrderController.cancelOrder);
 
 export default router;

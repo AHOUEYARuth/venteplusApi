@@ -195,6 +195,9 @@ async createOrder(data) {
   },
 
 
+   async cancelOrder(orderId) {
+    return await OrderModel.cancelOrder(orderId);
+  },
   async computeStatistics(shopId, isSale) {
   if (!shopId) throw new Error("shopId est requis");
 

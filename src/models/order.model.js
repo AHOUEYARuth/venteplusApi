@@ -1,4 +1,5 @@
 
+import { OrderStatus } from "@prisma/client";
 import prisma from "../prismaClient.js";
 
 export const OrderModel = {
@@ -69,6 +70,26 @@ export const OrderModel = {
         customerCredit: true,
       },
     });
+  },
+
+  async cancelOrder(orderId) {
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+    });
+
+    if (!order) throw new Error("Commande introuvable");
+ 
+    if (order.status === OrderStatus.CANCELLED)
+      throw new Error("Cette commande est déjà annulée");
+    if (order.status === OrderStatus.DELIVERED || order.status === OrderStatus.CONFIRMED)
+      throw new Error("Impossible d’annuler une commande déjà livrée");
+ 
+    const cancelledOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: { status: OrderStatus.CANCELLED },
+    });
+
+    return cancelledOrder;
   },
 
   async delete(id) {

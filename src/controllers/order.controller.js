@@ -30,6 +30,28 @@ export const OrderController = {
     }
   },
 
+  async cancelOrder(req, res) {
+    try {
+      const { orderId } = req.params;
+
+      if (!orderId) {
+        return res.status(400).json({ message: "orderId est requis" });
+      }
+
+      const order = await OrderService.cancelOrder(orderId);
+
+      res.status(200).json({
+        message: "Commande annulée avec succès",
+        order,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(400).json({
+        message: error.message || "Erreur lors de l’annulation de la commande",
+      });
+    }
+  },
+
   async getByShop(req, res) {
     try {
       const shopId = req.params.shopId;
