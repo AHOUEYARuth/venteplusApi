@@ -59,8 +59,7 @@ async createOrder(data) {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-    // Nombre de ventes du mois
+ 
     const monthlySalesCount = await prisma.order.count({
       where: {
         shopId,
@@ -69,15 +68,14 @@ async createOrder(data) {
       },
     });
 
-    // Commandes en cours
+  
     const pendingOrders = await prisma.order.count({
       where: {
         shopId,
         status: "PENDING",
       },
     });
-
-    // Calcul du bénéfice du mois
+ 
     const monthlyOrders = await prisma.order.findMany({
       where: {
         shopId,
@@ -98,7 +96,7 @@ async createOrder(data) {
       }
     }
 
-    // Statistiques sur 12 mois
+ 
     const year = now.getFullYear();
     const yearlyProfit = [];
 
@@ -139,6 +137,63 @@ async createOrder(data) {
       yearlyProfit,
     };
   },
+
+
+
+  async getDaysStatistics(shopId) {
+    if (!shopId) throw new Error("shopId est requis");
+
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+
+ 
+    const daysSalesCount = await prisma.order.count({
+      where: {
+        shopId,
+        isSale: true,
+        createdAt: { gte: startOfMonth, lte: endOfMonth },
+      },
+    });
+
+    
+    const pendingOrders = await prisma.order.count({
+      where: {
+        shopId,
+        status: "PENDING",
+      },
+    });
+
+  
+    const daysOrders = await prisma.order.findMany({
+      where: {
+        shopId,
+        isSale: true,
+        createdAt: { gte: startOfDay, lte: endOfDay },
+      },
+      include: {
+        toOrders: { include: { product: true } },
+      },
+    });
+
+    let daysProfit = 0;
+    for (const order of daysOrders) {
+      for (const item of order.toOrders) {
+        const profitPerProduct =
+          (item.product.salePrice - item.product.purchasePrice) * item.quantity;
+        monthlyProfit += profitPerProduct;
+      }
+    }
+ 
+
+    return {
+      daysSalesCount,
+      pendingOrders,
+      daysProfit,
+
+    };
+  },
+
 
   async computeStatistics(shopId, isSale) {
   if (!shopId) throw new Error("shopId est requis");
