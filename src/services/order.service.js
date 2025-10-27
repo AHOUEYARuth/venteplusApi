@@ -152,7 +152,7 @@ async createOrder(data) {
       where: {
         shopId,
         isSale: true,
-        createdAt: { gte: startOfMonth, lte: endOfMonth },
+        createdAt: { gte: startOfDay, lte: endOfDay },
       },
     });
 
@@ -181,7 +181,7 @@ async createOrder(data) {
       for (const item of order.toOrders) {
         const profitPerProduct =
           (item.product.salePrice - item.product.purchasePrice) * item.quantity;
-        monthlyProfit += profitPerProduct;
+        daysProfit += profitPerProduct;
       }
     }
  
