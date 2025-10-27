@@ -54,6 +54,21 @@ export const ProductController = {
     }
   },
 
+
+  async getTopSelling(req, res) {
+    try {
+      const { shopId } = req.params;
+      const data = await ProductService.getTopSellingProducts(shopId);
+      res.json({ success: true, data });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "Erreur lors de la récupération des produits les plus vendus",
+        error: error.message,
+      });
+    }
+  },
   async getByShop(req, res) {
     try {
       const { shopId } = req.params;

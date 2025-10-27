@@ -32,16 +32,17 @@ export const OrderController = {
 
   async getByShop(req, res) {
     try {
+      const shopId = req.params.shopId;
       const filters = {
-        shopId: req.query.shopId || null,
         customerId: req.query.customerId || null,
         status: req.query.status || null,
         dateFrom: req.query.dateFrom || null,
         dateTo: req.query.dateTo || null,
         isSale: req.query.isSale === "true" ? true : req.query.isSale === "false" ? false : undefined,
       };
-      const orders = await OrderService.getAllOrders(filters);
-      res.json({ success: true, data: orders });
+      const statistics = await OrderService.computeStatistics(shopId, filters.isSale);
+      const orders = await OrderService.getAllOrders(shopId,filters);
+      res.json({ success: true, data: orders,statistics });
     } catch (error) {
       res.status(500).json({
         success: false,
@@ -50,7 +51,34 @@ export const OrderController = {
       });
     }
   },
-
+  async getMonthlySales(req, res) {
+    try {
+      const { shopId } = req.params;
+      const data = await OrderService.getMonthlySales(shopId);
+      res.json({ success: true, data });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "Erreur lors de la récupération des ventes du mois",
+        error: error.message,
+      });
+    }
+  },
+   async getStatistics(req, res) {
+    try {
+      const { shopId } = req.params;
+      const data = await OrderService.getStatistics(shopId);
+      res.json({ success: true, data });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "Erreur lors du calcul des statistiques",
+        error: error.message,
+      });
+    }
+  },
   async getById(req, res) {
     try {
       const { id } = req.params;

@@ -16,11 +16,11 @@ export const OrderModel = {
     });
   },
 
-  async findAll(filters = {}) {
-    const { shopId, customerId, status, dateFrom, dateTo, isSale } = filters;
+  async findAll(shopId,filters = {}) {
+    const { customerId, status, dateFrom, dateTo, isSale } = filters;
 
     const where = {
-      ...(shopId && { shopId }),
+      shopId,
       ...(customerId && { customerId }),
       ...(isSale && { isSale }),
       ...(status && { status }),

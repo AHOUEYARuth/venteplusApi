@@ -11,5 +11,6 @@ router.delete("/:id", ProductController.delete);
 router.get("/shop/:shopId", ProductController.getByShop);
 router.get("/category/:categoryId", ProductController.getByCategory);
 router.get("/shop/:shopId/low-stock", ProductController.getLowStock);
+router.get("/top-selling/:shopId", ProductController.getTopSelling);
 
 export default router;
