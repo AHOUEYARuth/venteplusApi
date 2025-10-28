@@ -21,5 +21,5 @@ router.post('/register-employe',   upload.fields([
 
 router.get("/shop/:shopId",authMiddleware, TraderController.getTradersByShop);
 router.post("/validate-employee/:traderId",authMiddleware, TraderController.validateTrader);
-
+router.post("/blocked-employee/:traderId",authMiddleware, TraderController.blockedTrader);
 export default router;

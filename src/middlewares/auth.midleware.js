@@ -15,6 +15,7 @@ export const authMiddleware = async (req, res, next) => {
  
     const user = await prisma.user.findUnique({
       where: { id: decoded.id.toString() },
+      include:{ trader : true}
     });
     if (!user) return res.status(401).json({ message: "Utilisateur introuvable" });
 

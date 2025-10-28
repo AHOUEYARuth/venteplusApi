@@ -3,14 +3,13 @@ import { TraderService } from "../services/traderService.js";
 export const TraderController = {
   async register(req, res) {
     try {
-      
       const avatar = req.files?.["avatar"]?.[0];
       const logo = req.files?.["logo"]?.[0];
       const identityCard = req.files?.["identityCard"]?.[0];
       const imageShop = req.files?.["imageShop"]?.[0];
       console.log("avatar:");
-      console.log(req.files)
-      
+      console.log(req.files);
+
       const data = {
         ...req.body,
         avatarUrl: avatar ? avatar.path : null,
@@ -19,9 +18,8 @@ export const TraderController = {
         imageShopUrl: imageShop ? imageShop.path : null,
       };
 
-     
       const result = await TraderService.registerTrader(data);
- 
+
       return res.status(201).json({
         message: "Commerçant créé avec succès ✅",
         data: result,
@@ -34,9 +32,8 @@ export const TraderController = {
     }
   },
 
-   async registerEmploye(req, res) {
+  async registerEmploye(req, res) {
     try {
-      
       const avatar = req.files?.["avatar"]?.[0];
       const identityCard = req.files?.["identityCard"]?.[0];
       const data = {
@@ -45,9 +42,8 @@ export const TraderController = {
         identityCardUrl: identityCard ? identityCard.path : null,
       };
 
-     
       const result = await TraderService.registerEmploye(data);
- 
+
       return res.status(201).json({
         message: "Employé créé avec succès ✅",
         data: result,
@@ -60,13 +56,14 @@ export const TraderController = {
     }
   },
 
-
   async getTradersByShop(req, res) {
     try {
       const { shopId } = req.params;
 
       if (!shopId) {
-        return res.status(400).json({ message: "L'identifiant de la boutique est requis." });
+        return res
+          .status(400)
+          .json({ message: "L'identifiant de la boutique est requis." });
       }
 
       const traders = await TraderService.getTradersByShop(shopId);
@@ -77,7 +74,8 @@ export const TraderController = {
       });
     } catch (error) {
       return res.status(500).json({
-        message: error.message || "Erreur serveur lors de la récupération des traders",
+        message:
+          error.message || "Erreur serveur lors de la récupération des traders",
       });
     }
   },
@@ -86,17 +84,51 @@ export const TraderController = {
     try {
       const { traderId } = req.params;
       const { shopId } = req.body;
- 
-      const validatorId = req.user?.trader?.id;  
-      console.log("validator trader id",validatorId)
+
+      const validatorId = req.user?.trader?.id;
+      console.log("validator trader id", validatorId);
       if (!validatorId || !shopId) {
-        return res.status(400).json({ message: "Paramètres manquants (validatorId ou shopId)." });
+        return res
+          .status(400)
+          .json({ message: "Paramètres manquants (validatorId ou shopId)." });
       }
 
-      const validated = await TraderService.validateTrader({ validatorId, traderId, shopId });
+      const validated = await TraderService.validateTrader({
+        validatorId,
+        traderId,
+        shopId,
+      });
 
       return res.status(200).json({
-        message: "Trader validé avec succès.",
+        message: "Employé validé avec succès.",
+        data: validated,
+      });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+
+  async blockedTrader(req, res) {
+    try {
+      const { traderId } = req.params;
+      const { shopId } = req.body;
+
+      const validatorId = req.user?.trader?.id;
+      console.log("validator trader id", validatorId);
+      if (!validatorId || !shopId) {
+        return res
+          .status(400)
+          .json({ message: "Paramètres manquants (validatorId ou shopId)." });
+      }
+
+      const validated = await TraderService.blockedTrader({
+        validatorId,
+        traderId,
+        shopId,
+      });
+
+      return res.status(200).json({
+        message: "Employé bloqué avec succès.",
         data: validated,
       });
     } catch (error) {
