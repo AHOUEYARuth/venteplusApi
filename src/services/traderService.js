@@ -69,4 +69,55 @@ export const TraderService = {
 
     return { user, trader, shop };
   },
+
+
+  async registerEmploye(data) {
+    const {
+      name,
+      firstName,
+      email,
+      phoneNumber,
+      password,
+      role,
+      identityCardUrl,
+      avatarUrl,
+      shopId,
+    } = data;
+ 
+    const existingUser = await UserModel.findByPhoneNumber(phoneNumber);
+    if (existingUser) {
+      throw new Error("Numéro de téléphone déjà utilisé");
+    }
+
+   
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+  
+    const user = await UserModel.create({
+      name,
+      firstName,
+      email,
+      phoneNumber,
+      password: hashedPassword,
+      avatarUrl,  
+      role:UserRole.TRADER
+    });
+
+ 
+    const trader = await TraderModel.create({
+      identityCard: identityCardUrl,
+      userId: user.id,
+      role,
+    });
+
+  
+    await prisma.traderShop.create({
+      data: {
+        traderId: trader.id,
+        shopId: shopId,
+      },
+    });
+
+    return { user, trader };
+  },
 };

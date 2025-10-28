@@ -29,7 +29,33 @@ export const TraderController = {
     } catch (error) {
       console.error("Erreur dans TraderController.register:", error);
       return res.status(400).json({
-        message: error.message || "Erreur lors de la création du Trader",
+        message: error.message || "Erreur lors de la création du Commercant",
+      });
+    }
+  },
+
+   async registerEmploye(req, res) {
+    try {
+      
+      const avatar = req.files?.["avatar"]?.[0];
+      const identityCard = req.files?.["identityCard"]?.[0];
+      const data = {
+        ...req.body,
+        avatarUrl: avatar ? avatar.path : null,
+        identityCardUrl: identityCard ? identityCard.path : null,
+      };
+
+     
+      const result = await TraderService.registerEmploye(data);
+ 
+      return res.status(201).json({
+        message: "Employé créé avec succès ✅",
+        data: result,
+      });
+    } catch (error) {
+      console.error("Erreur dans TraderController.registerEmploye:", error);
+      return res.status(400).json({
+        message: error.message || "Erreur lors de la création de l'employée",
       });
     }
   },

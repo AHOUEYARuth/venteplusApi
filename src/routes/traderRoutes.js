@@ -12,4 +12,10 @@ router.post('/register',   upload.fields([
     { name: 'identityCard', maxCount: 1 },
     { name: 'imageShop', maxCount: 1 },
   ]),  TraderController.register);
+
+router.post('/register-employe',   upload.fields([
+    { name: 'avatar', maxCount: 1 },
+    { name: 'identityCard', maxCount: 1 },
+]),  TraderController.registerEmploye);
+
 export default router;
