@@ -34,7 +34,7 @@ export async function login({
     if (!user) throw Object.assign(new Error('Invalid credentials'), {
         status: 401
     });
-    if(!user.trader.isValidate) throw Object.assign(new Error('Compte non valide'), {
+    if(!user.trader.isValidate) throw Object.assign(new Error("Compte non validé. Veuillez contacté l'administrateur de la boutique."), {
         status: 404
     });
 
