@@ -3,6 +3,7 @@ import { TraderController } from "../controllers/traderController.js";
 import validateRequest from "../middlewares/validateRequests.js";
 import { registerValidation } from "../validators/authValidator.js";
 import upload from "../middlewares/upload.js";
+import { authMiddleware } from "../middlewares/auth.midleware.js";
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.post('/register-employe',   upload.fields([
     { name: 'identityCard', maxCount: 1 },
 ]),  TraderController.registerEmploye);
 
-router.get("/shop/:shopId", TraderController.getTradersByShop);
+router.get("/shop/:shopId",authMiddleware, TraderController.getTradersByShop);
+router.patch("/validate-employee/:traderId",authMiddleware, TraderController.getTradersByShop);
 
 export default router;

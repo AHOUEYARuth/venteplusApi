@@ -81,4 +81,26 @@ export const TraderController = {
       });
     }
   },
+
+  async validateTrader(req, res) {
+    try {
+      const { traderId } = req.params;
+      const { shopId } = req.body;
+ 
+      const validatorId = req.user?.trader?.id;  
+      console.log("validator trader id",validatorId)
+      if (!validatorId || !shopId) {
+        return res.status(400).json({ message: "Paramètres manquants (validatorId ou shopId)." });
+      }
+
+      const validated = await TraderService.validateTrader({ validatorId, traderId, shopId });
+
+      return res.status(200).json({
+        message: "Trader validé avec succès.",
+        data: validated,
+      });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 };

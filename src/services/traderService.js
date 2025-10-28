@@ -95,6 +95,49 @@ export const TraderService = {
     }
   },
 
+ 
+  async validateTrader({ validatorId, traderId, shopId }) {
+
+    const validator = await prisma.trader.findUnique({
+      where: { id: validatorId },
+      include: { traderShops: true },
+    });
+
+    if (!validator) throw new Error("Le trader valideur n'existe pas.");
+    if (validator.role !== "TRADER") throw new Error("Vous n'avez pas les droits pour valider un trader.");
+
+   
+    const traderToValidate = await prisma.trader.findUnique({
+      where: { id: traderId },
+      include: { traderShops: true },
+    });
+
+    if (!traderToValidate) throw new Error("Le trader à valider n'existe pas.");
+
+     
+    const validatorShopIds = validator.traderShops.map(ts => ts.shopId);
+    const traderShopIds = traderToValidate.traderShops.map(ts => ts.shopId);
+
+    const haveSameShop = validatorShopIds.some(id => traderShopIds.includes(id));
+
+    if (!haveSameShop) {
+      throw new Error("Ce trader n'appartient pas à la même boutique que vous.");
+    }
+
+    
+    if (!validatorShopIds.includes(shopId)) {
+      throw new Error("Vous n'êtes pas autorisé à valider des traders pour cette boutique.");
+    }
+
+    
+    const updatedTrader = await prisma.trader.update({
+      where: { id: traderId },
+      data: { isValidate: true },
+    });
+
+    return updatedTrader;
+  },
+
   async registerEmploye(data) {
     const {
       name,
