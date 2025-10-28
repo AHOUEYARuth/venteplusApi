@@ -34,6 +34,9 @@ export async function login({
     if (!user) throw Object.assign(new Error('Invalid credentials'), {
         status: 401
     });
+    if(!user.trader.isValidate) throw Object.assign(new Error('Compte non valide'), {
+        status: 404
+    });
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw Object.assign(new Error('Invalid credentials'), {

@@ -71,6 +71,7 @@ model Trader {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   identityCard String
   userId       String @unique @db.ObjectId
+  isValidate   Boolean @default(false)
   role         String @default("TRADER")
 
   user         User @relation(fields: [userId], references: [id], onDelete: Cascade)

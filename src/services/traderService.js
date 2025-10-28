@@ -48,6 +48,7 @@ export const TraderService = {
       identityCard: identityCardUrl,
       userId: user.id,
       role,
+      isValidate:true,
     });
 
      
