@@ -333,7 +333,9 @@ model ProductCategory {
 enum UserRole {
   ADMIN
   TRADER
-  CUSTOMER
+  MANAGER
+  CASHIER
+  DELIVERYMAN
 }
 
 enum OrderStatus {

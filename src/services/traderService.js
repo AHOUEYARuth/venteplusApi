@@ -71,6 +71,29 @@ export const TraderService = {
   },
 
 
+  async getTradersByShop(shopId) {
+    try {
+      const traders = await prisma.trader.findMany({
+        where: {
+          traderShops: {
+            some: { shopId: shopId },
+          },
+        },
+        include: {
+          user: true,  
+          traderShops: {
+            include: { shop: true },
+          },
+        },
+      });
+
+      return traders;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des traders :", error);
+      throw new Error("Impossible de récupérer les traders de cette boutique");
+    }
+  },
+
   async registerEmploye(data) {
     const {
       name,
