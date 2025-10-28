@@ -59,4 +59,26 @@ export const TraderController = {
       });
     }
   },
+
+
+  async getTradersByShop(req, res) {
+    try {
+      const { shopId } = req.params;
+
+      if (!shopId) {
+        return res.status(400).json({ message: "L'identifiant de la boutique est requis." });
+      }
+
+      const traders = await TraderService.getTradersByShop(shopId);
+
+      return res.status(200).json({
+        message: "Liste des employées récupérée avec succès",
+        data: traders,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: error.message || "Erreur serveur lors de la récupération des traders",
+      });
+    }
+  },
 };

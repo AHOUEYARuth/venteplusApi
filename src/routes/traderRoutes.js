@@ -18,4 +18,6 @@ router.post('/register-employe',   upload.fields([
     { name: 'identityCard', maxCount: 1 },
 ]),  TraderController.registerEmploye);
 
+router.get("/shop/:shopId", TraderController.getTradersByShop);
+
 export default router;
