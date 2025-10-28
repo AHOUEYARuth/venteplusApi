@@ -20,6 +20,6 @@ router.post('/register-employe',   upload.fields([
 ]),  TraderController.registerEmploye);
 
 router.get("/shop/:shopId",authMiddleware, TraderController.getTradersByShop);
-router.patch("/validate-employee/:traderId",authMiddleware, TraderController.getTradersByShop);
+router.post("/validate-employee/:traderId",authMiddleware, TraderController.validateTrader);
 
 export default router;
