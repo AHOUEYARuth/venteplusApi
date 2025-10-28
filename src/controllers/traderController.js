@@ -59,6 +59,11 @@ export const TraderController = {
   async getTradersByShop(req, res) {
     try {
       const { shopId } = req.params;
+       const filters = {
+         name: req.query.name || null,
+         dateFrom: req.query.dateFrom || null,
+         dateTo: req.query.dateTo || null,
+       }; 
 
       if (!shopId) {
         return res
@@ -66,7 +71,7 @@ export const TraderController = {
           .json({ message: "L'identifiant de la boutique est requis." });
       }
 
-      const traders = await TraderService.getTradersByShop(shopId);
+      const traders = await TraderService.getTradersByShop(shopId, filters);
 
       return res.status(200).json({
         message: "Liste des employées récupérée avec succès",

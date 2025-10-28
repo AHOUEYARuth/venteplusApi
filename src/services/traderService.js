@@ -66,29 +66,7 @@ export const TraderService = {
     return { user, trader, shop };
   },
 
-  async getTradersByShop(shopId) {
-    try {
-      const traders = await prisma.trader.findMany({
-        where: {
-          traderShops: {
-            some: { shopId: shopId },
-          },
-        },
-        include: {
-          user: true,
-          traderShops: {
-            include: { shop: true },
-          },
-        },
-      });
-
-      return traders;
-    } catch (error) {
-      console.error("Erreur lors de la récupération des traders :", error);
-      throw new Error("Impossible de récupérer les traders de cette boutique");
-    }
-  },
-
+ 
   async validateTrader({ validatorId, traderId, shopId }) {
     const validator = await prisma.trader.findUnique({
       where: { id: validatorId },
@@ -223,13 +201,38 @@ export const TraderService = {
     return { user, trader };
   },
 
-  async getTradersByShop(shopId) {
+  async getTradersByShop(shopId,filters = {}) {
+    
     try {
+       const { name, dateFrom, dateTo } = filters;
+
+     
+
       const traders = await prisma.trader.findMany({
         where: {
           traderShops: {
             some: { shopId: shopId },
           },
+          ...(name && {
+            user: {
+              OR: [
+                { name: { contains: name, mode: "insensitive" } },
+                { firstName: { contains: name, mode: "insensitive" } },
+              ],
+            },
+          }),
+          ...(dateFrom || dateTo
+            ? {
+                createdAt: {
+                  ...(dateFrom && {
+                    gte: new Date(dateFrom.split("-").reverse().join("-")),
+                  }),
+                  ...(dateTo && {
+                    lte: new Date(dateTo.split("-").reverse().join("-")),
+                  }),
+                },
+              }
+          : {}),
         },
         include: {
           user: true,
