@@ -19,9 +19,9 @@ async createOrder(data) {
      
       const product = await tx.product.findUnique({ where: { id: productId } });
       if (!product) throw new Error("Produit introuvable");
- 
+    
       const totalAmount = product.salePrice * quantity;
-     
+      if(isSale === true && product.availableQuantity < quantity) throw new Error("Produit non disponible. Augmenté votre stock");
       const order = await tx.order.create({
         data: {
           totalAmount,
@@ -32,6 +32,13 @@ async createOrder(data) {
           isSale,
         },
       });
+      if(isSale){
+        await tx.product.update({
+          where: { id: productId },
+          data: { availableQuantity: product.availableQuantity - quantity },
+        });
+      }
+      
  
       await tx.toOrder.create({
         data: {
