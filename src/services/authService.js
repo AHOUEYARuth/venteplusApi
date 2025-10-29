@@ -64,3 +64,15 @@ export async function login({
 
    
 };
+
+
+export async function  updateFcmToken(userId, token) {
+    if (!userId || !token) throw new Error("Paramètres invalides");
+
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { fcmToken: token },
+    });
+
+    return user;
+};

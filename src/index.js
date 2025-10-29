@@ -1,3 +1,4 @@
+import "../cron/notification.cron.js";
 import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
@@ -14,6 +15,7 @@ import customerCreditsRoutes from './routes/customerCreditsRoutes.js';
 import expensesRoutes from './routes/expenses.routes.js';
 import orderRoutes from './routes/order.routes.js';
 import recoveryRoutes from './routes/recovery.routes.js';
+import notificationRoutes from "./routes/notifications.routes.js";
 
 dotenv.config();
 const app = express();
@@ -45,7 +47,7 @@ app.use('/api/customer-credits', customerCreditsRoutes);
 app.use('/api/expenses',expensesRoutes);
 app.use('/api/orders',orderRoutes)
 app.use('/api/recoveries', recoveryRoutes);
-
+app.use("/notifications", notificationRoutes);
 
 app.use(errorHandler);
 

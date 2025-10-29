@@ -19,6 +19,7 @@ export async function register(req, res, next) {
   }
 };
 
+ 
 
 export async function login(req, res, next) {
     try {
@@ -55,3 +56,28 @@ export async function login(req, res, next) {
         next(err);
     }
 };
+
+export async function updateFcmToken(req, res) {
+  try {
+    const userId = req.user.id;
+    const { fcmToken } = req.body;
+
+    if (!fcmToken) {
+      return res.status(400).json({ success: false, message: "Le token FCM est requis" });
+    }
+
+    const user = await authService.updateFcmToken(userId, fcmToken);
+
+    res.json({
+      success: true,
+      message: "Token FCM mis à jour avec succès",
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Erreur lors de la mise à jour du token FCM",
+      error: error.message,
+    });
+  }
+}
