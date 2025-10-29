@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { TraderModel } from '../models/trader.model.js';
 import { UserModel } from '../models/user.model.js';
 import { ShopModel } from '../models/shop.model.js';
-
+import moment from "moment"
 
 const SALT_ROUNDS = 10;
 const OTP_TTL_MINUTES = 10; 
@@ -107,10 +107,16 @@ export async function createOtpForPhone(phoneNumber) {
 
 export async function getValidOtp(phoneNumber, code) {
   const record = await prisma.otp.findFirst({
-    where: { phoneNumber, code, used: false },
+    where: {
+       phoneNumber,
+       code,
+       expiresAt: {
+          gt: new Date(), 
+        }, 
+      },
   });
+ 
   if (!record) return null;
-  if (record.expiresAt < new Date()) return null;
   return record;
 }
 

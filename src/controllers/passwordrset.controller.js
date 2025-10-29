@@ -63,6 +63,8 @@ export async function resetPassword(req, res) {
       return res.status(400).json({ message: "Les mots de passe ne correspondent pas" });
 
     const otp = await authService.getValidOtp(phoneNumber, code);
+    console.log("otp");
+    console.log(otp);
     if (!otp) return res.status(400).json({ message: "Code invalide ou expiré" });
  
     if (otp.attempts >= 5) {
