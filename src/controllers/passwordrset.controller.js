@@ -8,9 +8,9 @@ export async function requestOtp(req, res) {
 
     const user = await authService.findUserByPhone(phoneNumber);
     if (!user) {
-      return res.status(200).json({
+      return res.status(404).json({
         message:
-          "Si un compte existe pour ce numéro, un OTP va être envoyé (vérifiez WhatsApp).",
+          "Ce numéro n'est pas utiliser pour un compte.",
       });
     }
 

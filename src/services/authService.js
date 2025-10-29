@@ -9,7 +9,7 @@ import { ShopModel } from '../models/shop.model.js';
 
 const SALT_ROUNDS = 10;
 const OTP_TTL_MINUTES = 10; 
-const OTP_LENGTH = 6;
+const OTP_LENGTH = 4;
 const BCRYPT_SALT_ROUNDS = 10;
 
 
