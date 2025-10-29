@@ -201,8 +201,12 @@ async createOrder(data) {
     };
   },
 
+  
+  async confirmeOrder(id) {
+    return await OrderModel.update(id, { status : OrderStatus.CONFIRMED });
+  }, 
 
-   async cancelOrder(orderId) {
+  async cancelOrder(orderId) {
     return await OrderModel.cancelOrder(orderId);
   },
   async computeStatistics(shopId, isSale) {

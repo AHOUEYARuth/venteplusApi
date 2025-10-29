@@ -13,5 +13,6 @@ router.get("/statistics/:shopId",authMiddleware, OrderController.getStatistics);
 router.get("/month-sales/:shopId", authMiddleware,OrderController.getMonthlySales);
 router.get("/days-statistics/:shopId",authMiddleware, OrderController.getDaysStatistics);
 router.put("/cancel/:orderId",authMiddleware, OrderController.cancelOrder);
+router.put("/confirm/:orderId",authMiddleware, OrderController.confirmeOrder);
 
 export default router;
