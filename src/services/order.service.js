@@ -160,7 +160,7 @@ async createOrder(data) {
       where: {
         shopId,
         isSale: true,
-        createdAt: { gte: startOfDay, lte: endOfDay },
+        orderDate: { gte: startOfDay, lte: endOfDay },
       },
     });
 
