@@ -8,11 +8,45 @@ export const getDashboardStats = async (shopId) => {
   const startOfLastMonth = moment().subtract(1, "month").startOf("month").toDate();
   const endOfLastMonth = moment().subtract(1, "month").endOf("month").toDate();
 
+  //----- DETTES STATS
+  const orders = await prisma.order.findMany({
+      where: { 
+        shopId,
+        isSale: true,
+        orderDate: { gte: startOfMonth }
+      },
+      include: {
+        toOrders: { include: { product: true } },
+      },
+  });
+
+
+  let monthNetProfit = 0;
+  let monthTotalProfit = 0;
+
+    for (const order of orders) {
+      for (const item of order.toOrders) {
+        const profitPerProduct = (item.product.salePrice - item.product.purchasePrice) * item.quantity;
+        totalProfit += profitPerProduct; 
+        if (order.createdAt >= startOfMonth && order.createdAt <= endOfMonth) {
+          netProfit += profitPerProduct;
+        }
+      }
+  }
+
   // --- VENTES ---
   const totalSales = await prisma.order.aggregate({
     where: { shopId, isSale: true },
     _sum: { totalAmount: true },
   });
+
+  const totalsDettesMonth = await prisma.expenses.aggregate({
+    where: {
+      shopId,
+      createdAt:{ gte: startOfMonth }
+    },
+    _sum: { spendAmount: true }
+  })
 
   const todaySales = await prisma.order.aggregate({
     where: {
@@ -168,11 +202,18 @@ const topSellingProducts = await Promise.all(
   );
 
   return {
+    expenses:{
+      monthNetProfit,
+      monthTotalProfit,
+      totalMonthExpenses:totalsDettesMonth._sum.spendAmount || 0
+    },
     sales: {
       total: totalSales._sum.totalAmount || 0,
       today: todaySales._sum.totalAmount || 0,
       month: monthlySales._sum.totalAmount || 0,
       growth: salesGrowth.toFixed(2),
+      monthNetProfit,
+      monthTotalProfit,
     },
     orders: {
       total: totalOrders,
