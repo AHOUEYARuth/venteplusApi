@@ -3,11 +3,14 @@ import moment from "moment"
 
 
 export const getDashboardStats = async (shopId) => {
+  const now = new Date();
   const startOfDay = moment().startOf("day").toDate();
   const startOfMonth = moment().startOf("month").toDate();
   const startOfLastMonth = moment().subtract(1, "month").startOf("month").toDate();
   const endOfLastMonth = moment().subtract(1, "month").endOf("month").toDate();
 
+  const startOfMonthSales = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonthSales = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   //----- DETTES STATS
   const orders = await prisma.order.findMany({
       where: { 
@@ -27,9 +30,9 @@ export const getDashboardStats = async (shopId) => {
     for (const order of orders) {
       for (const item of order.toOrders) {
         const profitPerProduct = (item.product.salePrice - item.product.purchasePrice) * item.quantity;
-        totalProfit += profitPerProduct; 
-        if (order.createdAt >= startOfMonth && order.createdAt <= endOfMonth) {
-          netProfit += profitPerProduct;
+        monthTotalProfit += profitPerProduct; 
+        if (order.createdAt >= startOfMonthSales && order.createdAt <= endOfMonthSales) {
+          monthNetProfit += profitPerProduct;
         }
       }
   }
@@ -134,10 +137,15 @@ const topSellingProducts = await Promise.all(
   // --- CLIENTS / CREDITS ---
   const customersCount = await prisma.customers.count({ where: { shopId } });
 
-  const totalCredits = await prisma.customerCredits.aggregate({
-    where: { shopId, isPaid: false },
-    _sum: { totalAmountToPay: true },
-  });
+ const totalCredits = await prisma.customerCredits.findMany({
+  where: { shopId, isPaid: false },
+  select: { totalAmountToPay: true, amountPaid: true },
+});
+
+const totalUnpaidCredits = totalCredits.reduce(
+  (sum, credit) => sum + (credit.totalAmountToPay - credit.amountPaid),
+  0
+);
 
   const paidCredits = await prisma.customerCredits.aggregate({
     where: { shopId, isPaid: true },
@@ -205,6 +213,7 @@ const topSellingProducts = await Promise.all(
     expenses:{
       monthNetProfit,
       monthTotalProfit,
+      spentingMonth:monthNetProfit - (totalsDettesMonth._sum.spendAmount ?? 0),
       totalMonthExpenses:totalsDettesMonth._sum.spendAmount || 0
     },
     sales: {
@@ -225,7 +234,7 @@ const topSellingProducts = await Promise.all(
     },
     customers: {
       total: customersCount,
-      totalCredits: totalCredits._sum.totalAmountToPay || 0,
+      totalCredits: totalUnpaidCredits,
       paidCredits: paidCredits._sum.totalAmountToPay || 0,
       creditRate: creditRate.toFixed(2),
     },

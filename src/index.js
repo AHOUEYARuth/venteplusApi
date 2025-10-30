@@ -1,4 +1,5 @@
 import "../cron/notification.cron.js";
+import "../cron/lowStockNotification.js"
 import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';

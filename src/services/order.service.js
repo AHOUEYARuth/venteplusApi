@@ -215,8 +215,7 @@ async createOrder(data) {
   },
   async computeStatistics(shopId, isSale) {
   if (!shopId) throw new Error("shopId est requis");
-
-  // ⚙️ Cas 1 : Commandes classiques
+ 
   if (typeof isSale === "undefined" || isSale === null || isSale === false) {
     const [totalOrders, cancelledOrders, deliveredOrders] = await Promise.all([
       prisma.order.count({ where: { shopId } }),
@@ -231,13 +230,12 @@ async createOrder(data) {
     };
   }
 
-  // ⚙️ Cas 2 : Ventes
+ 
   if (isSale === true) {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-    // Total ventes du mois
+ 
     const monthlySalesAgg = await prisma.order.aggregate({
       where: {
         shopId,
@@ -249,7 +247,7 @@ async createOrder(data) {
 
     const monthlySales = monthlySalesAgg._sum.totalAmount ?? 0;
 
-    // Calcul du bénéfice net et total via les produits liés
+    
     const orders = await prisma.order.findMany({
       where: { shopId, isSale: true },
       include: {
@@ -257,6 +255,17 @@ async createOrder(data) {
       },
     });
 
+    const salesCount = await prisma.order.count({
+      where: {
+        shopId,
+        isSale: true,
+        createdAt: {
+          gte: startOfMonth,
+          lte: endOfMonth,
+        },
+      },
+    });
+    
     let netProfit = 0;
     let totalProfit = 0;
 
@@ -274,6 +283,7 @@ async createOrder(data) {
       monthlySales,
       netProfit,
       totalProfit,
+      salesCount
     };
   }
 
@@ -375,7 +385,7 @@ async payOrder(orderId) {
       orderBy: { createdAt: "desc" },
     });
 
-    // calcule profit sur chaque vente
+ 
     const result = sales.map((order) => {
       let profit = 0;
       order.toOrders.forEach((item) => {
