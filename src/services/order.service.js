@@ -27,7 +27,7 @@ async createOrder(data) {
         data: {
           totalAmount,
           deliveryAddress,
-          status: isSale === true ? OrderStatus.DELIVERED : OrderStatus.PENDING,
+          status: isSale === true ? OrderStatus.CONFIRMED : OrderStatus.PENDING,
           customerId,
           shopId,
           isSale,
@@ -307,6 +307,7 @@ async payOrder(orderId) {
       where: { id: orderId },
       data: {
         isSale: true,
+        status: order.status == OrderStatus.PENDING ? OrderStatus.CONFIRMED : order.status
       },
     });
  
