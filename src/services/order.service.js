@@ -202,6 +202,9 @@ async createOrder(data) {
   },
 
   
+  async deliveredOrder(id) {
+    return await OrderModel.update(id, { status : OrderStatus.DELIVERED });
+  }, 
   async confirmeOrder(id) {
     return await OrderModel.update(id, { status : OrderStatus.CONFIRMED });
   }, 

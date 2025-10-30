@@ -54,6 +54,29 @@ export const OrderController = {
   },
 
 
+  
+  async deliveredOrder(req, res) {
+    try {
+      const { orderId } = req.params;
+
+      if (!orderId) {
+        return res.status(400).json({ message: "orderId est requis" });
+      }
+
+      const order = await OrderService.deliveredOrder(orderId);
+
+      res.status(200).json({
+        message: "Commande confirmé avec succès",
+        order,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(400).json({
+        message: error.message || "Erreur lors de l’annulation de la commande",
+      });
+    }
+  },
+
    async confirmeOrder(req, res) {
     try {
       const { orderId } = req.params;
