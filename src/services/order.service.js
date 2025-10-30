@@ -307,6 +307,7 @@ async payOrder(orderId) {
       where: { id: orderId },
       data: {
         isSale: true,
+        orderDate:new Date(),
         status: order.status == OrderStatus.PENDING ? OrderStatus.CONFIRMED : order.status
       },
     });
@@ -406,4 +407,9 @@ async payOrder(orderId) {
     return await OrderModel.delete(id);
   },
 };
+
+
+
+
+
 

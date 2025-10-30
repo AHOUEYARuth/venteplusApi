@@ -16,6 +16,7 @@ import expensesRoutes from './routes/expenses.routes.js';
 import orderRoutes from './routes/order.routes.js';
 import recoveryRoutes from './routes/recovery.routes.js';
 import notificationRoutes from "./routes/notifications.routes.js";
+import dashboardRoutes from "./routes/dasboard.route.js";
 
 dotenv.config();
 const app = express();
@@ -48,7 +49,7 @@ app.use('/api/expenses',expensesRoutes);
 app.use('/api/orders',orderRoutes)
 app.use('/api/recoveries', recoveryRoutes);
 app.use("/notifications", notificationRoutes);
-
+app.use("/api/stats", dashboardRoutes);
 app.use(errorHandler);
 
 
