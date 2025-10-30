@@ -11,7 +11,7 @@ export const getDashboardStats = async (shopId) => {
 
   const startOfMonthSales = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonthSales = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  //----- DETTES STATS
+ 
   const orders = await prisma.order.findMany({
       where: { 
         shopId,
@@ -36,8 +36,7 @@ export const getDashboardStats = async (shopId) => {
         }
       }
   }
-
-  // --- VENTES ---
+ 
   const totalSales = await prisma.order.aggregate({
     where: { shopId, isSale: true },
     _sum: { totalAmount: true },
@@ -85,13 +84,13 @@ export const getDashboardStats = async (shopId) => {
         100
       : 0;
 
-  // --- COMMANDES ---
+  
   const totalOrders = await prisma.order.count({ where: { shopId } });
   const pendingOrders = await prisma.order.count({
     where: { shopId, isSale: false },
   });
 
-  // --- PRODUITS ---
+  
   const lowStockProducts = await prisma.product.count({
     where: { shopId, availableQuantity: { lt: 5 } },
   });
@@ -119,9 +118,7 @@ const topSellingProducts = await Promise.all(
         updatedAt: true,
       },
     });
-
-    // Calcul du bénéfice total sur les ventes de ce produit
-    // profit = (prix de vente - prix d'achat) * quantité vendue
+ 
     const totalProfit =
       ((product?.salePrice || 0) - (product?.purchasePrice || 0)) *
       (item._sum.quantity || 0);
@@ -134,7 +131,7 @@ const topSellingProducts = await Promise.all(
   })
 );
 
-  // --- CLIENTS / CREDITS ---
+ 
   const customersCount = await prisma.customers.count({ where: { shopId } });
 
  const totalCredits = await prisma.customerCredits.findMany({
@@ -158,8 +155,7 @@ const totalUnpaidCredits = totalCredits.reduce(
 
   const creditRate =
     totalOrders > 0 ? (totalOrdersWithCredit / totalOrders) * 100 : 0;
-
-  // --- ÉVOLUTION 7 DERNIERS JOURS ---
+ 
   const last7Days = Array.from({ length: 7 }).map((_, i) =>
     moment().subtract(i, "days").startOf("day")
   );
@@ -185,9 +181,8 @@ const totalUnpaidCredits = totalCredits.reduce(
     })
   );
 
-  const salesLast7Days = dailySales.reverse(); // du plus ancien au plus récent
-
-  // --- CHIFFRE D’AFFAIRES PAR MOIS ---
+  const salesLast7Days = dailySales.reverse(); 
+  
   const monthlyRevenue = await Promise.all(
     Array.from({ length: 12 }).map(async (_, i) => {
       const start = moment().month(i).startOf("month").toDate();

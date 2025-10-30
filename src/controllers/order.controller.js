@@ -207,7 +207,7 @@ export const OrderController = {
     try {
       const { id } = req.params;
       const order = await OrderService.updateOrder(id, req.body);
-      res.json({ success: true, message: "Commande mise à jour ✅", data: order });
+      res.json({ success: true, message: "Commande mise à jour", data: order });
     } catch (error) {
       res.status(400).json({
         success: false,
@@ -221,7 +221,7 @@ export const OrderController = {
     try {
       const { id } = req.params;
       await OrderService.deleteOrder(id);
-      res.json({ success: true, message: "Commande supprimée avec succès ✅" });
+      res.json({ success: true, message: "Commande supprimée avec succès" });
     } catch (error) {
       res.status(500).json({
         success: false,

@@ -21,7 +21,7 @@ export const TraderController = {
       const result = await TraderService.registerTrader(data);
 
       return res.status(201).json({
-        message: "Commerçant créé avec succès ✅",
+        message: "Commerçant créé avec succès",
         data: result,
       });
     } catch (error) {
@@ -45,7 +45,7 @@ export const TraderController = {
       const result = await TraderService.registerEmploye(data);
 
       return res.status(201).json({
-        message: "Employé créé avec succès ✅",
+        message: "Employé créé avec succès",
         data: result,
       });
     } catch (error) {

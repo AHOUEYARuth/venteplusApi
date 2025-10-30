@@ -5,7 +5,7 @@ export const ProductCategoryController = {
     try {
       const category = await ProductCategoryService.createCategory(req.body);
       return res.status(201).json({
-        message: "Catégorie créée avec succès ✅",
+        message: "Catégorie créée avec succès",
         data: category,
       });
     } catch (error) {
@@ -21,7 +21,7 @@ export const ProductCategoryController = {
       const { id } = req.params;
       const updated = await ProductCategoryService.updateCategory(id, req.body);
       return res.status(200).json({
-        message: "Catégorie mise à jour avec succès ✅",
+        message: "Catégorie mise à jour avec succès",
         data: updated,
       });
     } catch (error) {
@@ -37,7 +37,7 @@ export const ProductCategoryController = {
       const { id } = req.params;
       await ProductCategoryService.deleteCategory(id);
       return res.status(200).json({
-        message: "Catégorie supprimée avec succès 🗑️",
+        message: "Catégorie supprimée avec succès",
       });
     } catch (error) {
       console.error("Erreur suppression catégorie:", error);
@@ -52,7 +52,7 @@ export const ProductCategoryController = {
       const { shopId } = req.params;
       const categories = await ProductCategoryService.getCategoriesByShop(shopId);
       return res.status(200).json({
-        message: "Liste des catégories de la boutique ✅",
+        message: "Liste des catégories de la boutique",
         data: categories,
       });
     } catch (error) {

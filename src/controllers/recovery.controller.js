@@ -1,7 +1,7 @@
 import { RecoveryService } from "../services/recovery.service.js";
 
 export const RecoveryController = {
-  // 🟢 Créer
+ 
   async create(req, res) {
     try {
       const recovery = await RecoveryService.createRecovery(req.body);
@@ -11,8 +11,7 @@ export const RecoveryController = {
       res.status(500).json({ success: false, message: "Erreur lors de la création de la récupération" });
     }
   },
-
-  // 🟡 Lire toutes les récupérations d’un CustomerCredit
+ 
   async findAllByCustomerCredit(req, res) {
     try {
       const { customerCreditId } = req.params;
@@ -25,7 +24,7 @@ export const RecoveryController = {
     }
   },
 
-  // 🔵 Lire par ID
+ 
   async findOne(req, res) {
     try {
       const { id } = req.params;
@@ -42,7 +41,7 @@ export const RecoveryController = {
     }
   },
 
-  // 🟠 Mise à jour
+ 
   async update(req, res) {
     try {
       const { id } = req.params;
@@ -54,7 +53,7 @@ export const RecoveryController = {
     }
   },
 
-  // 🔴 Suppression
+
   async delete(req, res) {
     try {
       const { id } = req.params;

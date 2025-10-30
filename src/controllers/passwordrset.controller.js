@@ -4,7 +4,7 @@ import { sendMessage } from '../services/whatsapp.service.js';
 export async function requestOtp(req, res) {
   try {
     const { phoneNumber } = req.body;
-    if (!phoneNumber) return res.status(400).json({ message: "Phone is required" });
+    if (!phoneNumber) return res.status(400).json({ message: "Le numéro est requis" });
 
     const user = await authService.findUserByPhone(phoneNumber);
     if (!user) {
@@ -39,7 +39,7 @@ export async function verifyOtp(req, res) {
   try {
     const { phoneNumber, code } = req.body;
     if (!phoneNumber || !code)
-      return res.status(400).json({ message: "phone and code are required" });
+      return res.status(400).json({ message: "Entre le code OTP et le numéro de telephone" });
 
     const otp = await authService.getValidOtp(phoneNumber, code);
     if (!otp) return res.status(400).json({ message: "Code invalide ou expiré" });

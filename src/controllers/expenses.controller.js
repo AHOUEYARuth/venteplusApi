@@ -7,7 +7,7 @@ export const ExpensesController = {
       const expense = await ExpensesService.createExpense(req.body);
       return res.status(201).json({
         success: true,
-        message: "Dépense créée avec succès ✅",
+        message: "Dépense créée avec succès",
         data: expense,
       });
     } catch (error) {
@@ -54,7 +54,7 @@ export const ExpensesController = {
       const updatedExpense = await ExpensesService.updateExpense(id, req.body);
       return res.status(200).json({
         success: true,
-        message: "Dépense mise à jour avec succès ✅",
+        message: "Dépense mise à jour avec succès",
         data: updatedExpense,
       });
     } catch (error) {
@@ -70,7 +70,7 @@ export const ExpensesController = {
       await ExpensesService.deleteExpense(id);
       return res.status(200).json({
         success: true,
-        message: "Dépense supprimée avec succès 🗑️",
+        message: "Dépense supprimée avec succès",
       });
     } catch (error) {
       console.error("Erreur suppression dépense:", error);

@@ -5,7 +5,7 @@ import prisma from "../src/prismaClient.js";
 
  
 cron.schedule("0 19 * * *", async () => {
-  console.log("🔔 Envoi automatique de notification à 19h00...");
+  console.log("Envoi automatique de notification à 19h00...");
 
   try {
   
@@ -22,16 +22,16 @@ cron.schedule("0 19 * * *", async () => {
  
     const message = {
       notification: {
-        title: "Rappel du jour 📅",
-        body: "N’oubliez pas de vérifier vos ventes du jour ! 💰",
+        title: "Rappel du jour",
+        body: "N’oubliez pas de vérifier vos ventes du jour !",
       },
       tokens,
     };
 
     
     const response = await admin.messaging().sendEachForMulticast(message);
-    console.log(`✅ Notifications envoyées : ${response.successCount}/${tokens.length}`);
+    console.log(`Notifications envoyées : ${response.successCount}/${tokens.length}`);
   } catch (error) {
-    console.error("❌ Erreur lors de l’envoi de la notification :", error.message);
+    console.error("Erreur lors de l’envoi de la notification :", error.message);
   }
 });

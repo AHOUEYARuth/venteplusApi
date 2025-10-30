@@ -18,7 +18,7 @@ export const ProductController = {
         additionalCosts: parseInt(req.body.additionalCosts, 10),
       });
       return res.status(201).json({
-        message: "Produit créé avec succès ✅",
+        message: "Produit créé avec succès",
         data: product,
       });
     } catch (error) {
@@ -32,7 +32,7 @@ export const ProductController = {
       const { id } = req.params;
       const updated = await ProductService.updateProduct(id, req.body);
       return res.status(200).json({
-        message: "Produit mis à jour avec succès ✅",
+        message: "Produit mis à jour avec succès",
         data: updated,
       });
     } catch (error) {
@@ -46,7 +46,7 @@ export const ProductController = {
       const { id } = req.params;
       await ProductService.deleteProduct(id);
       return res.status(200).json({
-        message: "Produit supprimé avec succès 🗑️",
+        message: "Produit supprimé avec succès",
       });
     } catch (error) {
       console.error("Erreur suppression produit:", error);
@@ -78,7 +78,7 @@ export const ProductController = {
       const filters = { name, categoryId, dateFrom, dateTo };
       const products = await ProductService.getProductsByShop(shopId, filters);
       return res.status(200).json({
-        message: "Produits de la boutique récupérés ✅",
+        message: "Produits de la boutique récupérés",
         data: products,
       });
     } catch (error) {
@@ -92,7 +92,7 @@ export const ProductController = {
       const { categoryId } = req.params;
       const products = await ProductService.getProductsByCategory(categoryId);
       return res.status(200).json({
-        message: "Produits de la catégorie récupérés ✅",
+        message: "Produits de la catégorie récupérés",
         data: products,
       });
     } catch (error) {
@@ -106,7 +106,7 @@ export const ProductController = {
       const { shopId } = req.params;
       const products = await ProductService.getLowStockProducts(shopId);
       return res.status(200).json({
-        message: "Produits avec stock faible ✅",
+        message: "Produits avec stock faible",
         data: products,
       });
     } catch (error) {

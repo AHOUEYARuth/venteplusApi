@@ -4,7 +4,7 @@ export const CustomerController = {
   async createCustomer(req, res) {
     try {
       const customer = await CustomerService.createCustomer(req.body);
-      return res.status(201).json({ message: "Client créé ✅", data: customer });
+      return res.status(201).json({ message: "Client créé", data: customer });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
@@ -29,7 +29,7 @@ export const CustomerController = {
         dateTo: req.query.dateTo || null,
       };
       var customers = await CustomerService.listCustomersByShop(shopId,filters);
-      return res.status(200).json({ message: "Liste des clients ✅", data: customers });
+      return res.status(200).json({ message: "Liste des clients", data: customers });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }

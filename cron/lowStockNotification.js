@@ -10,12 +10,12 @@ async function sendNotification({ token, title, body }) {
       notification: { title, body },
     });
   } catch (error) {
-    console.error("❌ Erreur lors de l’envoi de la notification :", error.message);
+    console.error("Erreur lors de l’envoi de la notification :", error.message);
   }
 }
  
 cron.schedule("0 */8 * * *", async () => {
-  console.log("🔔 Vérification des stocks faibles...");
+  console.log("Vérification des stocks faibles...");
 
   try {
  
@@ -41,7 +41,7 @@ cron.schedule("0 */8 * * *", async () => {
     );
     console.log("Tache cron")
     if (lowStockProducts.length === 0) {
-      console.log("✅ Aucun produit en rupture imminente.");
+      console.log("Aucun produit en rupture imminente.");
       return;
     }
 
@@ -65,15 +65,15 @@ cron.schedule("0 */8 * * *", async () => {
 
       const productNames = products.map((p) => p.name).join(", ");
 
-      const title = "🚨 Alerte de stock faible";
+      const title = "Alerte de stock faible";
       const body = `Les produits suivants sont presque en rupture : ${productNames}.`;
 
       await sendNotification({ token: user.fcmToken, title, body });
-      console.log(`📩 Notification envoyée à ${user.name}: ${body}`);
+      console.log(`Notification envoyée à ${user.name}: ${body}`);
     }
 
-    console.log("✅ Tâche terminée avec succès.");
+    console.log("Tâche terminée avec succès.");
   } catch (error) {
-    console.error("❌ Erreur lors de la vérification des stocks faibles :", error);
+    console.error("Erreur lors de la vérification des stocks faibles :", error);
   }
 });
