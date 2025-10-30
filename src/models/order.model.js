@@ -22,8 +22,8 @@ export const OrderModel = {
 
     const where = {
       shopId,
+      isSale,
       ...(customerId && { customerId }),
-      ...(isSale && { isSale }),
       ...(status && { status }),
       ...(dateFrom || dateTo
         ? {

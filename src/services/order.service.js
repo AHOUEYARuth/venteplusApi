@@ -312,7 +312,7 @@ async payOrder(orderId) {
     });
  
     if (order.customerCredit) {
-      await tx.customerCredit.update({
+      await tx.customerCredits.update({
         where: { id: order.customerCredit.id },
         data: { isPaid: true, totalAmountToPay: order.totalAmount, amountPaid: order.totalAmount  },
       });
