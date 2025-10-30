@@ -15,5 +15,6 @@ router.get("/days-statistics/:shopId",authMiddleware, OrderController.getDaysSta
 router.put("/cancel/:orderId",authMiddleware, OrderController.cancelOrder);
 router.put("/confirm/:orderId",authMiddleware, OrderController.confirmeOrder);
 router.put("/delivered/:orderId",authMiddleware, OrderController.deliveredOrder);
+router.put("/pay/:orderId",authMiddleware, OrderController.payOrder);
 
 export default router;

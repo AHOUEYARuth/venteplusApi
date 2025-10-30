@@ -3,6 +3,7 @@ import { OrderStatus } from "@prisma/client";
 import { OrderModel } from "../models/order.model.js";
 import { ToOrderModel } from "../models/toOrder.model.js";
 import prisma from "../prismaClient.js";
+import admin from "../../firebase.js";
 
 export const OrderService = {
 async createOrder(data) {
@@ -279,6 +280,77 @@ async createOrder(data) {
   return {};
 },
  
+
+
+async payOrder(orderId) {
+ 
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: {
+      toOrders: { include: { product: true } },
+      customerCredit: true,
+    },
+  });
+
+  if (!order) {
+    throw Object.assign(new Error("Commande introuvable"), { status: 404 });
+  }
+
+ 
+  if (order.isSale) {
+    throw Object.assign(new Error("Commande déjà payée"), { status: 400 });
+  }
+ 
+  const result = await prisma.$transaction(async (tx) => {
+ 
+    const updatedOrder = await tx.order.update({
+      where: { id: orderId },
+      data: {
+        isSale: true,
+      },
+    });
+ 
+    if (order.customerCredit) {
+      await tx.customerCredit.update({
+        where: { id: order.customerCredit.id },
+        data: { isPaid: true, totalAmountToPay: order.totalAmount, amountPaid: order.totalAmount  },
+      });
+    }
+ 
+    for (const item of order.toOrders) {
+      const newQty = item.product.availableQuantity - item.quantity;
+
+      if (newQty < 0) {
+        throw Object.assign(
+          new Error(`Stock insuffisant pour ${item.product.label}`),
+          { status: 400 }
+        );
+      }
+      if(newQty <= item.product.minimumQuantity){
+          const message = {
+              notification: {
+                title: "Rappel produit",
+                body: `Augmentez votre stock de produit de ${item.product.name}`,
+              },
+              tokens,
+          };
+        
+            
+         await admin.messaging().sendEachForMulticast(message);
+      }
+
+      await tx.product.update({
+        where: { id: item.product.id },
+        data: { availableQuantity: newQty },
+      });
+    }
+
+    return updatedOrder;
+  });
+
+  return result;
+},
+
 
 
  async getMonthlySales(shopId) {
