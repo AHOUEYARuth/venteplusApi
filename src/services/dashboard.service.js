@@ -9,8 +9,10 @@ export const getDashboardStats = async (shopId) => {
   const startOfLastMonth = moment().subtract(1, "month").startOf("month").toDate();
   const endOfLastMonth = moment().subtract(1, "month").endOf("month").toDate();
 
-  const startOfMonthSales = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonthSales = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const startOfMonthSales = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+  const endOfMonthSales = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+  
  
   const orders = await prisma.order.findMany({
       where: { 
