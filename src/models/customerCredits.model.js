@@ -11,6 +11,7 @@ export const CustomerCreditsModel = {
  
     const where = {
        shopId,
+       
       ...(dateFrom || dateTo
         ? {
             createdAt: {
@@ -33,9 +34,17 @@ export const CustomerCreditsModel = {
       where,
       include: {
         customer: true,
-        order: {
-          include: { toOrders : { include: { product: true } } },
+      
+        order:{
+           include: {
+             toOrders: {
+               include: {
+                  product: true
+               }
+             }
+           }
         },
+      
         shop: true
       },
       orderBy: { createdAt: "desc" },

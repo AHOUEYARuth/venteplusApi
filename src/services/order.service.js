@@ -65,8 +65,8 @@ async createOrder(data) {
     if (!shopId) throw new Error("shopId est requis");
 
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
  
     const monthlySalesCount = await prisma.order.count({
       where: {
@@ -109,9 +109,12 @@ async createOrder(data) {
     const yearlyProfit = [];
 
     for (let month = 0; month < 12; month++) {
-      const start = new Date(year, month, 1);
-      const end = new Date(year, month + 1, 0);
-
+     
+      
+      const start = new Date(now.getFullYear(), month, 1, 0, 0, 0, 0);
+      const end = new Date(now.getFullYear(), month + 1, 0, 23, 59, 59, 999);
+ 
+      
       const orders = await prisma.order.findMany({
         where: {
           shopId,
